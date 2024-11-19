@@ -3,7 +3,6 @@
 #include "UIElements.h"
 #include "ConwaysGameOfLife.h"
 #include "ConwaysGameOfLifeMaksiowy.h"
-#include "ConwayBasedPhysics.hpp"
 
 //ui consts
 const int grid_size = 19;

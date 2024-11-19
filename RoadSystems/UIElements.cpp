@@ -1,6 +1,8 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "UIElements.h"
+#include "FileManager.h"
+#include "tinyxml2.h"
 
 //constants:
 #define WHITE sf::Color(255,255,255)
@@ -72,21 +74,46 @@ void Save_Button::Clicked(sf::RenderWindow& window, bool simulate, sf::Image& im
 
 
         //Left-clicking hovered-over cell = adding smth:
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !simulate) {
-            for (int i = 0; i < grid_num; i++) {
-                for (int j = 0; j < grid_num; j++) {
-                    sf::Color cell_color = grid_list[i][j].default_color;
-                    // Loop over each pixel within the cell area
-                    for (int k = 0; k < grid_size; k++) {
-                        for (int l = 0; l < grid_size; l++) {
-                            int x = i * (grid_size + 1) + k;
-                            int y = j * (grid_size + 1) + l;
-                            image.setPixel(x, y, cell_color);
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !simulate){
+
+            std::string saveLocation = FileManager::GetLocation();
+
+			if (saveLocation != "") {
+				tinyxml2::XMLDocument doc;
+				tinyxml2::XMLElement* root = doc.NewElement("root");
+				doc.InsertFirstChild(root);
+				for (int i = 0; i < grid_num; i++) {
+					for (int j = 0; j < grid_num; j++) {
+						if (grid_list[i][j].default_color != WHITE) {
+                            tinyxml2::XMLElement* cell = doc.NewElement("cell");
+                            cell->SetAttribute("x", i);
+                            cell->SetAttribute("y", j);
+                            cell->SetAttribute("r", grid_list[i][j].default_color.r);
+                            cell->SetAttribute("g", grid_list[i][j].default_color.g);
+                            cell->SetAttribute("b", grid_list[i][j].default_color.b);
+                            root->InsertEndChild(cell);
                         }
-                    }
-                }
-            }
-            Save_Image(image, "image1");
+					}
+				}
+				doc.SaveFile(saveLocation.c_str());
+
+			}
+
+            //**Stara implementacja, NIE RUSZAÆ
+            //for (int i = 0; i < grid_num; i++) {
+            //    for (int j = 0; j < grid_num; j++) {
+            //        sf::Color cell_color = grid_list[i][j].default_color;
+            //        // Loop over each pixel within the cell area
+            //        for (int k = 0; k < grid_size; k++) {
+            //            for (int l = 0; l < grid_size; l++) {
+            //                int x = i * (grid_size + 1) + k;
+            //                int y = j * (grid_size + 1) + l;
+            //                image.setPixel(x, y, cell_color);
+            //            }
+            //        }
+            //    }
+            //}
+            //Save_Image(image, "image1");
         }
         else Recolor(default_color);
     }
