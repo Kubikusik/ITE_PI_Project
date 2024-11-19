@@ -130,12 +130,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ConwayBasedPhysics.cpp" />
     <ClCompile Include="ConwaysGameOfLife.cpp" />
     <ClCompile Include="ConwaysGameOfLifeMaksiowy.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="UIElements.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConwayBasedPhysics.hpp" />
     <ClInclude Include="ConwaysGameOfLife.h" />
     <ClInclude Include="ConwaysGameOfLifeMaksiowy.h" />
     <ClInclude Include="UIElements.h" />
