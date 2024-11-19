@@ -90,6 +90,7 @@ void ConwaysGameOfLifeMaksiowy(Grid_Tiles**& grid_list, int grid_num) {
 
 //simulation of physics using cellular automata
 void ConwaysPhysics(Grid_Tiles**& grid_list, int grid_num, std::vector<sf::Color>& color_list) {
+    srand(time(NULL));
 
     //color map of neighbors
     std::vector<ColorMap> color_map;
@@ -159,57 +160,46 @@ void ConwaysPhysics(Grid_Tiles**& grid_list, int grid_num, std::vector<sf::Color
                 }
             }
 
-
-            //Water
-            int neighbor_count = 0;
-
-            //how many neighbors are also water:
+            //Water:
             if (grid_list[i][j].default_color == WATER_COLOR) {
-                sf::Color searched_color = WATER_COLOR;
-                
-                for (int k = 0; k < color_map.size(); k++) {
-                    if (color_map[k].color == searched_color) {
-                        neighbor_count = color_map[k].count;
+                bool is_moved = false;
+
+                // Falling straight down
+                if (j + 1 < grid_num && grid_list[i][j + 1].default_color == DEAD_COLOR && grid_list[i][j + 1].temp_color == DEAD_COLOR) {
+                    grid_list[i][j].pressure = 0;
+                    grid_list[i][j + 1].pressure += 1;
+                    grid_list[i][j + 1].temp_color = WATER_COLOR;
+                    is_moved = true;
+                }
+
+                // Lateral spreading if downward blocked
+                if (!is_moved) {
+                    // Spread right
+                    if (i + 1 < grid_num && grid_list[i + 1][j].default_color == DEAD_COLOR &&
+                        grid_list[i + 1][j].temp_color == DEAD_COLOR && rand()%2 ) {
+                        grid_list[i][j].pressure = 0;
+                        grid_list[i + 1][j].pressure += 1;
+                        grid_list[i + 1][j].temp_color = WATER_COLOR;
+                        is_moved = true;
                     }
+                    // Spread left
+                    else if (i - 1 >= 0 && grid_list[i - 1][j].default_color == DEAD_COLOR &&
+                        grid_list[i - 1][j].temp_color == DEAD_COLOR) {
+                        grid_list[i][j].pressure = 0;
+                        grid_list[i - 1][j].pressure += 1;
+                        grid_list[i - 1][j].temp_color = WATER_COLOR;
+                        is_moved = true;
+                    }
+                }
+
+                // Evaporation
+                if (grid_list[i][j].pressure == 0) {
+                    grid_list[i][j].temp_color = DEAD_COLOR;
                 }
             }
 
-            //falling checks (randomness used for determining right or left, so its not too deterministic):
-            if (grid_list[i][j].default_color == WATER_COLOR) {
-                if (j + 1 < grid_num) {
-                    if (grid_list[i][j + 1].default_color == DEAD_COLOR) {
-                        grid_list[i][j + 1].temp_color = WATER_COLOR;
-                        grid_list[i][j].temp_color = DEAD_COLOR;
-                    }
-                    else if (i - 1 >= 0 && i + 1 < grid_num) {
-                        if (grid_list[i - 1][j + 1].default_color == DEAD_COLOR && rand() % 2 && grid_list[i - 1][j].temp_color == DEAD_COLOR) {
-                            grid_list[i - 1][j+1].temp_color = WATER_COLOR;
-                            grid_list[i][j].temp_color = DEAD_COLOR;
-                        }
-                        else if (grid_list[i + 1][j + 1].default_color == DEAD_COLOR && rand() % 2 && grid_list[i + 1][j].temp_color == DEAD_COLOR) {
-                            grid_list[i + 1][j + 1].temp_color = WATER_COLOR;
-                            grid_list[i][j].temp_color = DEAD_COLOR;
-                        }
-                        else if (grid_list[i - 1][j].default_color == DEAD_COLOR && grid_list[i - 1][j].temp_color == DEAD_COLOR && rand()%2) {
-                            
-                            if (grid_list[i + 1][j].default_color == WATER_COLOR) {
-                                grid_list[i - 1][j].temp_color = WATER_COLOR;
-                                grid_list[i][j].temp_color = DEAD_COLOR;
-                            }
-                                
-                        }
-                        else if (grid_list[i + 1][j].default_color == DEAD_COLOR && grid_list[i + 1][j].temp_color == DEAD_COLOR) {
-                            if (grid_list[i - 1][j].default_color == WATER_COLOR){
-                                grid_list[i + 1][j].temp_color = WATER_COLOR;
-                                grid_list[i][j].temp_color = DEAD_COLOR;
-                            }
 
-                            
-                        }
-                    }
-                }
-                
-            }
+           
 
             //clear color_map so next cell can use it again
             color_map.clear();
@@ -222,5 +212,6 @@ void ConwaysPhysics(Grid_Tiles**& grid_list, int grid_num, std::vector<sf::Color
         for (int j = 0; j < grid_num; j++) {
             grid_list[i][j].default_color = grid_list[i][j].temp_color;
         }
+    
     }
 }

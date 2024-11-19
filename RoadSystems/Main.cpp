@@ -123,12 +123,16 @@ int main()
                         //left click action on cell
                         if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !simulate) {
                             grid_list[searched_x][searched_y].default_color = paint_color;
+                            if (paint_color == sf::Color(142, 194, 228)) {
+                                grid_list[searched_x][searched_y].pressure += 1;
+                            }
                         }
 
 
                         //right click action on cell
                         if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !simulate) {
                             grid_list[searched_x][searched_y].default_color = sf::Color(255, 255, 255);
+                            grid_list[searched_x][searched_y].pressure = 0;
                         }
                     }
                 }

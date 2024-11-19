@@ -13,6 +13,7 @@ public:
 	sf::RectangleShape square;
 	sf::Color default_color = WHITE;
 	sf::Color temp_color = WHITE;
+	int pressure = 0;
 
 	void Recolor(sf::Color color);
 };
