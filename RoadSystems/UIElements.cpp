@@ -76,27 +76,34 @@ void Save_Button::Clicked(sf::RenderWindow& window, bool simulate, sf::Image& im
         //Left-clicking hovered-over cell = adding smth:
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !simulate){
 
-            std::string saveLocation = FileManager::GetLocation();
+			//otwiera explorer do wyboru miejsca zapisu i zwraca œcie¿kê do pliku jako string
+            std::string saveLocation = FileManager::SaveLocation(); 
 
-			if (saveLocation != "") {
-				tinyxml2::XMLDocument doc;
-				tinyxml2::XMLElement* root = doc.NewElement("root");
-				doc.InsertFirstChild(root);
-				for (int i = 0; i < grid_num; i++) {
-					for (int j = 0; j < grid_num; j++) {
-						if (grid_list[i][j].default_color != WHITE) {
-                            tinyxml2::XMLElement* cell = doc.NewElement("cell");
+			if (saveLocation != "") { //jak kliknie anuluj czy zamknie to nie zapisuje
+				tinyxml2::XMLDocument doc; //nowy DOM pliku XML
+
+				doc.Parse("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //logiczne
+				tinyxml2::XMLElement* root = doc.NewElement("root"); //tworzy element root
+				doc.InsertFirstChild(root); //otwiera <root>
+                for (int i = 0; i < grid_num; i++) {
+                    for (int j = 0; j < grid_num; j++) {
+                        if (grid_list[i][j].default_color != WHITE) {
+							tinyxml2::XMLElement* cell = doc.NewElement("cell"); //tworzy element cell
+                            //wpisywanie parametrów
                             cell->SetAttribute("x", i);
                             cell->SetAttribute("y", j);
                             cell->SetAttribute("r", grid_list[i][j].default_color.r);
                             cell->SetAttribute("g", grid_list[i][j].default_color.g);
                             cell->SetAttribute("b", grid_list[i][j].default_color.b);
+                            //zapisanie <cell *parametry*>
                             root->InsertEndChild(cell);
                         }
-					}
-				}
+                    }
+                }
+                //tego syfu zapomnia³em lmao
+                doc.InsertEndChild(root); //zamyka </root>
+                //zapisanie
 				doc.SaveFile(saveLocation.c_str());
-
 			}
 
             //**Stara implementacja, NIE RUSZAÆ
