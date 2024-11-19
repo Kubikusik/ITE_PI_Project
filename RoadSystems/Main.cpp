@@ -12,14 +12,16 @@ const int grid_num = 40;
 const int map_x = grid_num * (grid_size + 1);
 const int map_y = grid_num * (grid_size + 1);
 const int margin = 20;
+sf::Font default_font;
 
-//conway consts
-const int sim_tpf = 2; //ticks per frame of simulations
+
+//simulation consts
+const int sim_tpf = 2; //ticks per frame of simulations (sim_tpf = 2 means that only once per 2 frames there will be a simulation update)
 const sf::Color ALIVE_COLOR(255, 0, 0);
 const sf::Color DEAD_COLOR(255, 255, 255);
 
-sf::Font default_font;
 
+//Function for making all the color buttons (all substances)
 void MakeButtons(std::vector<Paint_Button>& color_button_list, std::vector<sf::Color>& color_list) {
 
     int i = 0;
@@ -46,30 +48,30 @@ void MakeButtons(std::vector<Paint_Button>& color_button_list, std::vector<sf::C
 
 int main()
 {
-    default_font.loadFromFile("OpenSansRegular.ttf");
-    int delta = 0;
+    //declaring all as needed:
+    default_font.loadFromFile("OpenSansRegular.ttf"); //loading the font used in all text
+    int delta = 0; //delta time for simulation use
 
-    int searched_x, searched_y = 0;
-    int neigbor_counter = 0;
-    bool is_focused = true;
-    bool simulate = false;
-    sf::Color paint_color(246, 215, 176);
-    sf::RenderWindow window(sf::VideoMode(map_x + ui_size, map_y), "Klocki LOL", sf::Style::Close);
-    std::vector<sf::Color> color_list;
+    int searched_x, searched_y = 0; //needed for searching mouse position on screen
+    bool is_focused = true; //is window being focused on
+    bool simulate = false; //is simulation running
+    sf::Color paint_color(246, 215, 176); //default left click color (sand)
+    sf::RenderWindow window(sf::VideoMode(map_x + ui_size, map_y), "Klocki LOL", sf::Style::Close); //initialasing the window
+    std::vector<sf::Color> color_list; //list of all colors of buttons, given to other functions
     
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(60); //stable framerate, so the simulation is constant and not changing with processing power fluctuactions
     
     
-    std::vector<Paint_Button> button_list;
+    std::vector<Paint_Button> button_list; //list of color buttons (all the ones that give substance)
 
-    sf::Image image;
-    image.create(grid_num*(grid_size+1), grid_num*(grid_size + 1), sf::Color(255,255,255));
+    sf::Image image; //image used for importing/exporting maps
+    image.create(grid_num*(grid_size+1), grid_num*(grid_size + 1), sf::Color(255,255,255)); //making white image as basis
 
-    Grid_Tiles** grid_list = new Grid_Tiles *[grid_num];
+    Grid_Tiles** grid_list = new Grid_Tiles *[grid_num]; //making a 2d array of objects of type Grid_Tiles (from "UIElements.h")
     for (int row = 0; row < grid_num; row++) {
         grid_list[row] = new Grid_Tiles[grid_num];
         for (int column = 0; column < grid_num; column++) {
-            grid_list[row][column].square.setFillColor(sf::Color(255, 255, 255));
+            grid_list[row][column].square.setFillColor(sf::Color(255, 255, 255)); //default color = white
             grid_list[row][column].square.setPosition(sf::Vector2f(ui_size + row * (grid_size+1), column * (grid_size + 1)));
             grid_list[row][column].square.setSize(sf::Vector2f(grid_size, grid_size));
         }
@@ -77,6 +79,8 @@ int main()
 
     MakeButtons(button_list, color_list);
 
+
+    //continuing button creation, functionality buttons
     int enumerator_of_button = 5;
     Save_Button save_button(0, enumerator_of_button *(50 + margin), 50, "save_b", "Save", default_font, sf::Color(50, 50, 50));
     enumerator_of_button++;
@@ -85,23 +89,25 @@ int main()
     Simulate_Button simulate_button(0, enumerator_of_button * (50 + margin), 50, "sim_b", "Run", default_font, sf::Color(255, 0, 0));
 
 
+    //main loop, running while window wasnt closed yet
     while (window.isOpen())
     {
-
+        //checking if any event happened
         sf::Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)        //window is closed
+            if (event.type == sf::Event::Closed)        //if window is closed
                 window.close();
-            if (event.type == sf::Event::GainedFocus)   //window in focus
+            if (event.type == sf::Event::GainedFocus)   //if window in focus
                 is_focused = true;
-            if (event.type == sf::Event::LostFocus)     //window is out of focus
+            if (event.type == sf::Event::LostFocus)     //if window is out of focus
                 is_focused = false;
 
-            if (event.type = sf::Event::MouseMoved) {
+            if (event.type = sf::Event::MouseMoved) { //if mouse is moved
                 
                 //if window is being focused on
                 if (is_focused) {
+                    //get position in pixels and translate it to what grid tile is that:
                     sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
                     searched_x = (mouse_pos.x - ui_size) / (grid_size + 1);
                     searched_y = (mouse_pos.y) / (grid_size + 1);
@@ -136,7 +142,7 @@ int main()
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) { //Space pressed closes window
             window.close();
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::C) && delta % sim_tpf == 0) { //C pressed closes window sometimes
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::C) && delta % sim_tpf == 0) { //C pressed closes window sometimes (delete, this was for fun)
             window.close();
         }
         
@@ -152,7 +158,6 @@ int main()
                 grid_list[i][j].Recolor(grid_list[i][j].default_color);
             }
         }
-        
 
         //Color buttons interactions
         for (auto& each : button_list) {
@@ -172,9 +177,10 @@ int main()
             }
         }
 
-        //Save Button
+        //Save Button cliking
         save_button.Clicked(window, simulate, image, grid_num, grid_size, grid_list);
 
+        //Load Button clicking
         load_button.Clicked(window, simulate, image, grid_num, grid_size, grid_list);
 
         //Start simulation button
@@ -195,7 +201,7 @@ int main()
             simulate_button.Recolor(simulate_button.default_color);
         }
 
-        //simulation
+        //simulation loop only on some frames
         if (simulate && (delta == 0)) {
             //ConwaysGameOfLife(grid_list, grid_num);
             //ConwaysGameOfLifeMaksiowy(grid_list, grid_num);
@@ -224,6 +230,8 @@ int main()
         
         //update screen
         window.display();
+
+        //add +1 to time and if it reaches desired tpf reset it to 0 (simulation frame)
         delta += 1;
         delta = delta % sim_tpf;
 

@@ -3,9 +3,13 @@
 #include "ConwaysGameOfLife.h"
 #include "UIElements.h"
 
+
+//constants:
 const sf::Color ALIVE_COLOR(255, 0, 0);
 const sf::Color DEAD_COLOR(255, 255, 255);
 
+
+//this function counts neighbors of desired color around the cell (also prevents checking out of bounds)
 int CountNeighbors(int start_x, int start_y, int end_x, int end_y, int x, int y, Grid_Tiles**& grid_list, int grid_num, sf::Color searched_color) {
     int neigbor_counter = 0;
 
@@ -26,6 +30,8 @@ int CountNeighbors(int start_x, int start_y, int end_x, int end_y, int x, int y,
     return neigbor_counter;
 }
 
+
+//classic Conway's Game Of Life, (mostly for learning use - DEPRECATED)
 void ConwaysGameOfLife(Grid_Tiles**& grid_list, int grid_num) {
     int neighbor_counter;
 
@@ -66,8 +72,9 @@ void ConwaysGameOfLife(Grid_Tiles**& grid_list, int grid_num) {
     }
 }
 
+
+//mostly classic Conway's Game Of Life, but with twist - many colored cells compete over the cell, (also for learning use - DEPRECATED)
 void ConwaysGameOfLifeManyColor(Grid_Tiles**& grid_list, int grid_num, std::vector<sf::Color>& color_list) {
-    
 
     for (int i = 0; i < grid_num; i++) {
         for (int j = 0; j < grid_num; j++) {

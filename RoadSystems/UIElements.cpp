@@ -2,13 +2,12 @@
 #include <SFML/Graphics.hpp>
 #include "UIElements.h"
 
-//definitions
-#define WHITE sf::Color(255,255,255)
-
-
 //constants:
+#define WHITE sf::Color(255,255,255)
 const int margin = 20;
 sf::String image_format = ".png";
+
+//all elements have their functions below
 
 //Grid:
 void Grid_Tiles::Recolor(sf::Color color) {
@@ -36,7 +35,7 @@ Button::Button(int x, int y, int size, sf::String name, sf::Color button_color):
 //Labeled_Button:
 Labeled_Button::Labeled_Button(int x, int y, int size, sf::String name,sf::String label, sf::Font &default_font, sf::Color button_color):Button(x, y, size, name, button_color) {
     
-    //text next to button
+    //text next to button parameters initialization
     button_label.setFont(default_font);
     button_label.setString(label);
     button_label.setCharacterSize(30);
@@ -100,6 +99,7 @@ void Load_Button::Load_Image(sf::Image& image, sf::String filename) {
 }
 
 void Load_Button::Clicked(sf::RenderWindow& window, bool simulate, sf::Image& image, int grid_num, int grid_size, Grid_Tiles**& grid_list) {
+    //if mouse is touching this button
     if (square.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))) {
         //Hovering mouse over cell:
         Recolor(sf::Color(abs(default_color.r - 60), abs(default_color.g - 60), abs(default_color.b - 60)));
