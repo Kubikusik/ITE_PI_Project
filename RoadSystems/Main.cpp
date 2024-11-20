@@ -114,10 +114,29 @@ int main()
             if (event.type == sf::Event::LostFocus)     //if window is out of focus
                 is_focused = false;
 
+            if (is_focused) {
+                if (event.type == sf::Event::MouseWheelMoved) {
+                    if (event.mouseWheel.delta > 0) {
+                        //Plus Button clicking
+                        //brush_size += 1;
+                        increase_brush_button.ScrollUp(window, simulate, brush_size, brush_size_label.button_label);
+
+
+                    }
+                    else if (event.mouseWheel.delta < 0) {
+                        //brush_size -= 1;
+                        decrease_brush_button.ScrollDown(window, simulate, brush_size, brush_size_label.button_label);
+                    }
+                }
+            }
+
             if (event.type = sf::Event::MouseMoved) { //if mouse is moved
                 
                 //if window is being focused on
                 if (is_focused) {
+
+                    
+
                     //get position in pixels and translate it to what grid tile is that:
                     sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
                     searched_x = (mouse_pos.x - ui_size) / (grid_size + 1);
@@ -181,6 +200,7 @@ int main()
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) paint_color = button_list[0].default_color;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::G)) paint_color = button_list[1].default_color;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::B)) paint_color = button_list[2].default_color;
+
 
         //recolor back after hovering
         for (int i = 0; i < grid_num; i++) {

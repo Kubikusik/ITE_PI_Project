@@ -203,7 +203,7 @@ void Plus_Button::Clicked(sf::RenderWindow& window, bool simulate, int &brush_si
 
 
         //Left-clicking hovered-over cell = adding smth:
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !simulate && !clicked) {
+        if (!simulate && !clicked) {
             //printf("clicked + !\n");
             //if (brush_size < grid_num / 2) {
             if (brush_size < 9) {
@@ -222,6 +222,16 @@ void Plus_Button::Release() {
     clicked = false;
 }
 
+void Plus_Button::ScrollUp(sf::RenderWindow& window, bool simulate, int& brush_size, sf::Text& counter) {
+    if (!simulate) {
+        if (brush_size < 9) {
+            brush_size += 1;
+            counter.setString("brush size:" + std::to_string(brush_size));
+        }
+
+    }
+}
+
 
 //Minus_Button:
 Minus_Button::Minus_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color) :Labeled_Button(x, y, size, name, label, default_font, button_color) {
@@ -236,8 +246,7 @@ void Minus_Button::Clicked(sf::RenderWindow& window, bool simulate, int &brush_s
 
 
         //Left-clicking hovered-over cell = adding smth:
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !simulate && !clicked) {
-            //printf("clicked - !\n");
+        if (!simulate && !clicked) {
             if (brush_size > 1) {
                 brush_size -= 1;
                 counter.setString("brush size:" + std::to_string(brush_size));
@@ -255,6 +264,16 @@ void Minus_Button::Release() {
     clicked = false;
 }
 
+void Minus_Button::ScrollDown(sf::RenderWindow& window, bool simulate, int& brush_size, sf::Text& counter) {
+    if (!simulate) {
+        if (brush_size >1) {
+            brush_size -= 1;
+            counter.setString("brush size:" + std::to_string(brush_size));
+        }
+
+    }
+}
+
 
 
 //Minus_Time_Button:
@@ -267,7 +286,7 @@ void Minus_Time_Button::Clicked(sf::RenderWindow& window, bool simulate, int& ti
 
 
         //Left-clicking hovered-over cell = adding smth:
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !simulate && !clicked) {
+        if (!simulate && !clicked) {
             //printf("clicked - !\n");
             if (time_speed>5) {
                 time_speed -= 5;
@@ -290,7 +309,7 @@ void Plus_Time_Button::Clicked(sf::RenderWindow& window, bool simulate, int& tim
 
 
         //Left-clicking hovered-over cell = adding smth:
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !simulate && !clicked) {
+        if (!simulate && !clicked) {
             //printf("clicked + !\n");
             if (time_speed < 20) {
                 time_speed += 5;

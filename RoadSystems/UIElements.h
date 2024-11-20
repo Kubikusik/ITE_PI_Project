@@ -83,6 +83,7 @@ public:
 	Plus_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color);
 	void Clicked(sf::RenderWindow& window, bool simulate, int &brush_size, sf::Text &counter, int grid_num);
 	void Release();
+	void ScrollUp(sf::RenderWindow& window, bool simulate, int& brush_size, sf::Text& counter);
 };
 
 class Minus_Button : public Labeled_Button {
@@ -91,6 +92,7 @@ public:
 	Minus_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color);
 	void Clicked(sf::RenderWindow& window, bool simulate, int &brush_size, sf::Text &counter);
 	void Release();
+	void ScrollDown(sf::RenderWindow& window, bool simulate, int& brush_size, sf::Text& counter);
 };
 
 class Plus_Time_Button : public Plus_Button {

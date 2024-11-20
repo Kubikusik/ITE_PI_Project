@@ -164,8 +164,9 @@ void ConwaysPhysics(Grid_Tiles**& grid_list, int grid_num, std::vector<sf::Color
             if (grid_list[i][j].default_color == WATER_COLOR) {
                 // Primary downward flow
                 if (j + 1 < grid_num &&
-                    grid_list[i][j + 1].default_color == DEAD_COLOR &&
-                    grid_list[i][j + 1].temp_color != WATER_COLOR) {
+                    grid_list[i][j + 1].default_color == DEAD_COLOR 
+                    && grid_list[i][j + 1].temp_color != WATER_COLOR
+                    ) {
                     grid_list[i][j + 1].temp_color = WATER_COLOR;
                     grid_list[i][j].temp_color = DEAD_COLOR;
                     grid_list[i][j + 1].isBounceRight = grid_list[i][j].isBounceRight;
@@ -246,6 +247,28 @@ void ConwaysPhysics(Grid_Tiles**& grid_list, int grid_num, std::vector<sf::Color
                 }
             }
 
+
+            //Fire:
+            if (grid_list[i][j].default_color == FIRE_COLOR) {
+                //how many neighbors are plants:
+                sf::Color searched_color = WATER_COLOR;
+                int neighbor_count = 0;
+                for (int k = 0; k < color_map.size(); k++) {
+                    if (color_map[k].color == searched_color) {
+                        neighbor_count = color_map[k].count;
+                    }
+                }
+
+                if (j+1<grid_num && grid_list[i][j+1].default_color == DEAD_COLOR 
+                    && grid_list[i][j + 1].temp_color == DEAD_COLOR) {
+                    grid_list[i][j + 1].temp_color = FIRE_COLOR;
+                    grid_list[i][j].temp_color = DEAD_COLOR;
+                }
+
+                if (neighbor_count > 0) {
+                    grid_list[i][j].temp_color = DEAD_COLOR;
+                }
+            }
 
             //clear color_map so next cell can use it again
             color_map.clear();
