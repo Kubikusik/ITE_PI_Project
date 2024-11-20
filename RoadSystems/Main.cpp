@@ -16,7 +16,7 @@ sf::Font default_font;
 
 
 //simulation consts
-const int sim_tpf = 2; //ticks per frame of simulations (sim_tpf = 2 means that only once per 2 frames there will be a simulation update)
+
 const sf::Color ALIVE_COLOR(255, 0, 0);
 const sf::Color DEAD_COLOR(255, 255, 255);
 
@@ -49,8 +49,12 @@ void MakeButtons(std::vector<Paint_Button>& color_button_list, std::vector<sf::C
 int main()
 {
     //declaring all as needed:
+    int sim_tpf = 5; //ticks per frame of simulations (sim_tpf = 2 means that only once per 2 frames there will be a simulation update)
+    int time_speed = 5;
     default_font.loadFromFile("OpenSansRegular.ttf"); //loading the font used in all text
     int delta = 0; //delta time for simulation use
+    int brush_size = 1;
+
 
     int searched_x, searched_y = 0; //needed for searching mouse position on screen
     bool is_focused = true; //is window being focused on
@@ -87,8 +91,15 @@ int main()
     Load_Button load_button(0, enumerator_of_button *(50 + margin), 50, "load_b", "Load", default_font, sf::Color(50, 50, 50));
     enumerator_of_button++;
     Simulate_Button simulate_button(0, enumerator_of_button * (50 + margin), 50, "sim_b", "Run", default_font, sf::Color(255, 0, 0));
-
-
+    enumerator_of_button++;
+    
+    Minus_Button decrease_brush_button(0, enumerator_of_button * (50 + margin), 50, "minus_b", "-", default_font, sf::Color(255, 255, 255, 10));
+    Plus_Button increase_brush_button(5*50, enumerator_of_button * (50 + margin), 50, "plus_b", "+", default_font, sf::Color(255, 255, 255, 10));
+    Labeled_Button brush_size_label(-margin/2, enumerator_of_button * (50 + margin), 50, "brush_counter", "brush size:" + std::to_string(brush_size), default_font, sf::Color(0, 0, 0, 0));
+    enumerator_of_button++;
+    Minus_Time_Button increase_time_button(0, enumerator_of_button * (50 + margin), 50, "minus_t_b", "-", default_font, sf::Color(255, 255, 255,10));
+    Plus_Time_Button decrease_time_button(5 * 50, enumerator_of_button * (50 + margin), 50, "plus_t_b", "+", default_font, sf::Color(255, 255, 255,10));
+    Labeled_Button time_speed_label(-margin / 2, enumerator_of_button * (50 + margin), 50, "time_counter", "time speed:" + std::to_string(sim_tpf), default_font, sf::Color(0, 0, 0, 0));
     //main loop, running while window wasnt closed yet
     while (window.isOpen())
     {
@@ -122,17 +133,35 @@ int main()
 
                         //left click action on cell
                         if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !simulate) {
-                            grid_list[searched_x][searched_y].default_color = paint_color;
-                            if (paint_color == sf::Color(142, 194, 228)) {
-                                grid_list[searched_x][searched_y].pressure += 1;
+                            int minimal_x = std::max(searched_x - brush_size +1, 0);
+                            int maximal_x = std::min(searched_x + brush_size -1, grid_num - 1);
+
+                            int minimal_y = std::max(searched_y - brush_size +1, 0);
+                            int maximal_y = std::min(searched_y + brush_size -1, grid_num - 1);
+
+                            for (int x = minimal_x; x <= maximal_x; x++) {
+                                for (int y = minimal_y; y <= maximal_y; y++) {
+                                    grid_list[x][y].default_color = paint_color;
+                                }
                             }
                         }
 
 
                         //right click action on cell
                         if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !simulate) {
-                            grid_list[searched_x][searched_y].default_color = sf::Color(255, 255, 255);
-                            grid_list[searched_x][searched_y].pressure = 0;
+
+                            int minimal_x = std::max(searched_x - brush_size + 1, 0);
+                            int maximal_x = std::min(searched_x + brush_size - 1, grid_num - 1);
+
+                            int minimal_y = std::max(searched_y - brush_size + 1, 0);
+                            int maximal_y = std::min(searched_y + brush_size - 1, grid_num - 1);
+
+                            for (int x = minimal_x; x <= maximal_x; x++) {
+                                for (int y = minimal_y; y <= maximal_y; y++) {
+                                    grid_list[x][y].default_color = sf::Color(255, 255, 255);
+                                }
+                            }
+                            
                         }
                     }
                 }
@@ -144,9 +173,6 @@ int main()
             window.close();
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) { //Space pressed closes window
-            window.close();
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::C) && delta % sim_tpf == 0) { //C pressed closes window sometimes (delete, this was for fun)
             window.close();
         }
         
@@ -187,8 +213,36 @@ int main()
         //Load Button clicking
         load_button.Clicked(window, simulate, image, grid_num, grid_size, grid_list);
 
+        //BRUSH CONTROLS
+        //Plus Button clicking
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            increase_brush_button.Clicked(window, simulate, brush_size, brush_size_label.button_label, grid_num);
+        }
+        else increase_brush_button.Release();
+        //Minus Button clicking
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            decrease_brush_button.Clicked(window, simulate, brush_size, brush_size_label.button_label);
+        }
+        else decrease_brush_button.Release();
+
+
+        //TIME CONTROLS
+        //Plus time Button clicking
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            increase_time_button.Clicked(window, simulate, time_speed, time_speed_label.button_label);
+            sim_tpf = 21 - time_speed;
+        }
+        else increase_time_button.Release();
+        //Minus time Button clicking
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            decrease_time_button.Clicked(window, simulate, time_speed, time_speed_label.button_label);
+            sim_tpf = 21 - time_speed;
+        }
+        else decrease_time_button.Release();
+
+
         //Start simulation button
-        if (simulate_button.square.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y)) || sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
+        if (simulate_button.square.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))) {
             //Hovering mouse over cell:
             simulate_button.Recolor(sf::Color(abs(simulate_button.default_color.r - 60), abs(simulate_button.default_color.g - 60), abs(simulate_button.default_color.b - 60)));
 
@@ -230,6 +284,12 @@ int main()
         save_button.DrawItself(window);
         load_button.DrawItself(window);
         simulate_button.DrawItself(window);
+        brush_size_label.DrawItself(window);
+        increase_brush_button.DrawItself(window);
+        decrease_brush_button.DrawItself(window);
+        time_speed_label.DrawItself(window);
+        increase_time_button.DrawItself(window);
+        decrease_time_button.DrawItself(window);
         
         
         //update screen

@@ -160,46 +160,92 @@ void ConwaysPhysics(Grid_Tiles**& grid_list, int grid_num, std::vector<sf::Color
                 }
             }
 
-            //Water:
+            //Water sim:
             if (grid_list[i][j].default_color == WATER_COLOR) {
-                bool is_moved = false;
-
-                // Falling straight down
-                if (j + 1 < grid_num && grid_list[i][j + 1].default_color == DEAD_COLOR && grid_list[i][j + 1].temp_color == DEAD_COLOR) {
-                    grid_list[i][j].pressure = 0;
-                    grid_list[i][j + 1].pressure += 1;
+                // Primary downward flow
+                if (j + 1 < grid_num &&
+                    grid_list[i][j + 1].default_color == DEAD_COLOR &&
+                    grid_list[i][j + 1].temp_color != WATER_COLOR) {
                     grid_list[i][j + 1].temp_color = WATER_COLOR;
-                    is_moved = true;
-                }
-
-                // Lateral spreading if downward blocked
-                if (!is_moved) {
-                    // Spread right
-                    if (i + 1 < grid_num && grid_list[i + 1][j].default_color == DEAD_COLOR &&
-                        grid_list[i + 1][j].temp_color == DEAD_COLOR && rand()%2 ) {
-                        grid_list[i][j].pressure = 0;
-                        grid_list[i + 1][j].pressure += 1;
-                        grid_list[i + 1][j].temp_color = WATER_COLOR;
-                        is_moved = true;
-                    }
-                    // Spread left
-                    else if (i - 1 >= 0 && grid_list[i - 1][j].default_color == DEAD_COLOR &&
-                        grid_list[i - 1][j].temp_color == DEAD_COLOR) {
-                        grid_list[i][j].pressure = 0;
-                        grid_list[i - 1][j].pressure += 1;
-                        grid_list[i - 1][j].temp_color = WATER_COLOR;
-                        is_moved = true;
-                    }
-                }
-
-                // Evaporation
-                if (grid_list[i][j].pressure == 0) {
                     grid_list[i][j].temp_color = DEAD_COLOR;
+                    grid_list[i][j + 1].isBounceRight = grid_list[i][j].isBounceRight;
+                }
+                // Diagonal flow if straight down is blocked
+                else if (j + 1 < grid_num &&
+                    ((i + 1 < grid_num &&
+                        grid_list[i + 1][j + 1].default_color == DEAD_COLOR &&
+                        grid_list[i + 1][j + 1].temp_color != WATER_COLOR) ||
+                        (i - 1 >= 0 &&
+                            grid_list[i - 1][j + 1].default_color == DEAD_COLOR &&
+                            grid_list[i - 1][j + 1].temp_color != WATER_COLOR))) {
+                    if (grid_list[i][j].isBounceRight &&
+                        i + 1 < grid_num &&
+                        grid_list[i + 1][j + 1].default_color == DEAD_COLOR &&
+                        grid_list[i + 1][j + 1].temp_color != WATER_COLOR) {
+                        grid_list[i + 1][j + 1].temp_color = WATER_COLOR;
+                        grid_list[i][j].temp_color = DEAD_COLOR;
+                        grid_list[i + 1][j + 1].isBounceRight = true;
+                    }
+                    else if (!grid_list[i][j].isBounceRight &&
+                        i - 1 >= 0 &&
+                        grid_list[i - 1][j + 1].default_color == DEAD_COLOR &&
+                        grid_list[i - 1][j + 1].temp_color != WATER_COLOR) {
+                        grid_list[i - 1][j + 1].temp_color = WATER_COLOR;
+                        grid_list[i][j].temp_color = DEAD_COLOR;
+                        grid_list[i - 1][j + 1].isBounceRight = false;
+                    }
+                }
+                // Bouncing mechanics
+                else {
+                    if (grid_list[i][j].isBounceRight) {
+                        // Try to move right
+                        if (i + 1 < grid_num &&
+                            grid_list[i + 1][j].default_color == DEAD_COLOR &&
+                            grid_list[i + 1][j].temp_color != WATER_COLOR) {
+                            grid_list[i + 1][j].temp_color = WATER_COLOR;
+                            grid_list[i][j].temp_color = DEAD_COLOR;
+                            grid_list[i + 1][j].isBounceRight = true;
+
+                            // Change direction if hit right wall
+                            if (i + 2 >= grid_num) {
+                                grid_list[i + 1][j].isBounceRight = false;
+                            }
+                        }
+                        // If can't move right, try left
+                        else if (i - 1 >= 0 &&
+                            grid_list[i - 1][j].default_color == DEAD_COLOR &&
+                            grid_list[i - 1][j].temp_color != WATER_COLOR) {
+                            grid_list[i - 1][j].temp_color = WATER_COLOR;
+                            grid_list[i][j].temp_color = DEAD_COLOR;
+                            grid_list[i - 1][j].isBounceRight = false;
+                        }
+                    }
+                    else {
+                        // Try to move left
+                        if (i - 1 >= 0 &&
+                            grid_list[i - 1][j].default_color == DEAD_COLOR &&
+                            grid_list[i - 1][j].temp_color != WATER_COLOR) {
+                            grid_list[i - 1][j].temp_color = WATER_COLOR;
+                            grid_list[i][j].temp_color = DEAD_COLOR;
+                            grid_list[i - 1][j].isBounceRight = false;
+
+                            // Change direction if hit left wall
+                            if (i - 2 < 0) {
+                                grid_list[i - 1][j].isBounceRight = true;
+                            }
+                        }
+                        // If can't move left, try right
+                        else if (i + 1 < grid_num &&
+                            grid_list[i + 1][j].default_color == DEAD_COLOR &&
+                            grid_list[i + 1][j].temp_color != WATER_COLOR) {
+                            grid_list[i + 1][j].temp_color = WATER_COLOR;
+                            grid_list[i][j].temp_color = DEAD_COLOR;
+                            grid_list[i + 1][j].isBounceRight = true;
+                        }
+                    }
                 }
             }
 
-
-           
 
             //clear color_map so next cell can use it again
             color_map.clear();

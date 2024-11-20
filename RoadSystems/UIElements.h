@@ -13,7 +13,7 @@ public:
 	sf::RectangleShape square;
 	sf::Color default_color = WHITE;
 	sf::Color temp_color = WHITE;
-	int pressure = 0;
+	bool isBounceRight = false;
 
 	void Recolor(sf::Color color);
 };
@@ -32,6 +32,8 @@ public:
 	sf::String button_name;
 
 	Button(int x, int y, int size, sf::String name, sf::Color button_color);
+	void DrawItself(sf::RenderWindow& window);
+	void Recolor(sf::Color color);
 };
 
 class Labeled_Button : public Button {
@@ -75,7 +77,33 @@ public:
 	void Release();
 };
 
+class Plus_Button : public Labeled_Button {
+public:
+	bool clicked = false;
+	Plus_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color);
+	void Clicked(sf::RenderWindow& window, bool simulate, int &brush_size, sf::Text &counter, int grid_num);
+	void Release();
+};
 
+class Minus_Button : public Labeled_Button {
+public:
+	bool clicked = false;
+	Minus_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color);
+	void Clicked(sf::RenderWindow& window, bool simulate, int &brush_size, sf::Text &counter);
+	void Release();
+};
+
+class Plus_Time_Button : public Plus_Button {
+public:
+	Plus_Time_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color) : Plus_Button(x, y, size, name, label, default_font, button_color) {};
+	void Clicked(sf::RenderWindow& window, bool simulate, int& time_speed, sf::Text& counter);
+};
+
+class Minus_Time_Button : public Minus_Button {
+public:
+	Minus_Time_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color) : Minus_Button(x, y, size, name, label, default_font, button_color) {};
+	void Clicked(sf::RenderWindow& window, bool simulate, int& time_speed, sf::Text& counter);
+};
 
 
 #endif

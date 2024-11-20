@@ -33,6 +33,13 @@ Button::Button(int x, int y, int size, sf::String name, sf::Color button_color):
 
 }
 
+void Button::DrawItself(sf::RenderWindow& window) {
+    window.draw(square);
+}
+void Button::Recolor(sf::Color color) {
+    square.setFillColor(color);
+}
+
 
 //Labeled_Button:
 Labeled_Button::Labeled_Button(int x, int y, int size, sf::String name,sf::String label, sf::Font &default_font, sf::Color button_color):Button(x, y, size, name, button_color) {
@@ -182,3 +189,117 @@ void Simulate_Button::Release() {
     clicked = false;
 }
 
+
+
+//Plus_Button:
+Plus_Button::Plus_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color) :Labeled_Button(x, y, size, name, label, default_font, button_color) {
+    button_label.setPosition(sf::Vector2f(x + size/3, y));
+}
+
+void Plus_Button::Clicked(sf::RenderWindow& window, bool simulate, int &brush_size, sf::Text &counter, int grid_num) {
+    if (square.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))) {
+        //Hovering mouse over cell:
+        Recolor(sf::Color(abs(default_color.r - 60), abs(default_color.g - 60), abs(default_color.b - 60)));
+
+
+        //Left-clicking hovered-over cell = adding smth:
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !simulate && !clicked) {
+            //printf("clicked + !\n");
+            //if (brush_size < grid_num / 2) {
+            if (brush_size < 9) {
+                brush_size += 1;
+                counter.setString("brush size:" + std::to_string(brush_size));
+            }
+
+        }
+    } 
+    else Recolor(default_color);
+
+    clicked = true;
+}
+void Plus_Button::Release() {
+    // Allow the button to be clicked again
+    clicked = false;
+}
+
+
+//Minus_Button:
+Minus_Button::Minus_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color) :Labeled_Button(x, y, size, name, label, default_font, button_color) {
+    button_label.setPosition(sf::Vector2f(x + size/3, y));
+}
+
+void Minus_Button::Clicked(sf::RenderWindow& window, bool simulate, int &brush_size, sf::Text &counter) {
+   
+    if (square.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))) {
+        //Hovering mouse over cell:
+        Recolor(sf::Color(abs(default_color.r - 60), abs(default_color.g - 60), abs(default_color.b - 60)));
+
+
+        //Left-clicking hovered-over cell = adding smth:
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !simulate && !clicked) {
+            //printf("clicked - !\n");
+            if (brush_size > 1) {
+                brush_size -= 1;
+                counter.setString("brush size:" + std::to_string(brush_size));
+            }
+                
+        }
+    }
+    else Recolor(default_color);
+
+    clicked = true;
+}
+
+void Minus_Button::Release() {
+    // Allow the button to be clicked again
+    clicked = false;
+}
+
+
+
+//Minus_Time_Button:
+
+void Minus_Time_Button::Clicked(sf::RenderWindow& window, bool simulate, int& time_speed, sf::Text& counter) {
+
+    if (square.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))) {
+        //Hovering mouse over cell:
+        Recolor(sf::Color(abs(default_color.r - 60), abs(default_color.g - 60), abs(default_color.b - 60)));
+
+
+        //Left-clicking hovered-over cell = adding smth:
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !simulate && !clicked) {
+            //printf("clicked - !\n");
+            if (time_speed>5) {
+                time_speed -= 5;
+                counter.setString("time speed:" + std::to_string(time_speed));
+            }
+
+        }
+    }
+    else Recolor(default_color);
+
+    clicked = true;
+}
+
+//Plus_Time_Button:
+void Plus_Time_Button::Clicked(sf::RenderWindow& window, bool simulate, int& time_speed, sf::Text& counter) {
+
+    if (square.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))) {
+        //Hovering mouse over cell:
+        Recolor(sf::Color(abs(default_color.r - 60), abs(default_color.g - 60), abs(default_color.b - 60)));
+
+
+        //Left-clicking hovered-over cell = adding smth:
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !simulate && !clicked) {
+            //printf("clicked + !\n");
+            if (time_speed < 20) {
+                time_speed += 5;
+                counter.setString("time speed:" + std::to_string(time_speed));
+            }
+
+        }
+    }
+    else Recolor(default_color);
+
+    clicked = true;
+}
