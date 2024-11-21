@@ -147,16 +147,44 @@ void Load_Button::Clicked(sf::RenderWindow& window, bool simulate, sf::Image& im
 
         //Left-clicking hovered-over cell = adding smth:
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !simulate) {
-            Load_Image(image, "image1");
-            for (int i = 0; i < grid_num; i++) {
-                for (int j = 0; j < grid_num; j++) {
-                    grid_list[i][j].default_color = image.getPixel(i * (grid_size + 1), j * (grid_size + 1));
+            //TODO: Grid will be cleared popup message
+            std::string file = FileManager::GetLocation(); //opens explorer to choose file and returns path as string
+            if (file != "") {
+                if (file.find(".xml") == std::string::npos) {
+                    //TODO: error popup
+                    Recolor(default_color);
+                    return;
                 }
-            }
-        }
-        else Recolor(default_color);
-    }
+				//Clear grid (WIP: will have popup notification)
+				for (int i = 0; i < grid_num; i++) {
+					for (int j = 0; j < grid_num; j++) {
+						grid_list[i][j].default_color = WHITE;
+					}
+				}
 
+				tinyxml2::XMLDocument doc; //initialize new XML DOM
+                doc.LoadFile(file.c_str()); //loads file
+				tinyxml2::XMLElement* cell = doc.FirstChildElement("root")->FirstChildElement("cell"); //gets first cell element
+				while (cell != NULL) { //while there are cells read and set their attributes
+					int x = cell->IntAttribute("x");
+					int y = cell->IntAttribute("y");
+					int r = cell->IntAttribute("r");
+					int g = cell->IntAttribute("g");
+					int b = cell->IntAttribute("b");
+					grid_list[x][y].default_color = sf::Color(r, g, b);
+					cell = cell->NextSiblingElement("cell"); //go to next cell
+				}
+                //Old implementation, DO NOT TOUCH
+                /*Load_Image(image, "image1");
+                for (int i = 0; i < grid_num; i++) {
+                    for (int j = 0; j < grid_num; j++) {
+                        grid_list[i][j].default_color = image.getPixel(i * (grid_size + 1), j * (grid_size + 1));
+                    }
+                }*/
+            }
+            else Recolor(default_color);
+        }
+    }
 }
 
 //Simulate_Button:
