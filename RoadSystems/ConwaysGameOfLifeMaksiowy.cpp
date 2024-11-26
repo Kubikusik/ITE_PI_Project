@@ -90,8 +90,6 @@ void ConwaysGameOfLifeMaksiowy(Grid_Tiles**& grid_list, int grid_num) {
 
 //simulation of physics using cellular automata
 void ConwaysPhysics(Grid_Tiles**& grid_list, int grid_num, std::vector<sf::Color>& color_list) {
-    srand(time(NULL));
-
     //color map of neighbors
     std::vector<ColorMap> color_map;
     
@@ -128,7 +126,7 @@ void ConwaysPhysics(Grid_Tiles**& grid_list, int grid_num, std::vector<sf::Color
 
             //Plant:
             //die if too much plants around
-
+            bool plant_is_grow = true;
             //how many neighbors are also plant:
             if (grid_list[i][j].default_color == PLANT_COLOR) {
                 sf::Color searched_color = PLANT_COLOR;
@@ -138,8 +136,18 @@ void ConwaysPhysics(Grid_Tiles**& grid_list, int grid_num, std::vector<sf::Color
                         neighbor_count = color_map[k].count;
                     }
                 }
-                if (neighbor_count >= 5) {
-                    grid_list[i][j].temp_color = DEAD_COLOR;
+
+                searched_color = FIRE_COLOR;
+                neighbor_count = 0;
+                for (int k = 0; k < color_map.size(); k++) {
+                    if (color_map[k].color == searched_color) {
+                        neighbor_count = color_map[k].count;
+                    }
+                }
+
+                if (neighbor_count >0) {
+                    grid_list[i][j].temp_color = FIRE_COLOR;
+                    plant_is_grow = false;
                 }
             }
 
@@ -155,7 +163,7 @@ void ConwaysPhysics(Grid_Tiles**& grid_list, int grid_num, std::vector<sf::Color
                     }
                 }
 
-                if (neighbor_count >1 && neighbor_count <3 && grid_list[i][j].temp_color == DEAD_COLOR) {
+                if (neighbor_count >1 && neighbor_count <3 && grid_list[i][j].temp_color == DEAD_COLOR && plant_is_grow) {
                     grid_list[i][j].temp_color = PLANT_COLOR;
                 }
             }
@@ -249,8 +257,9 @@ void ConwaysPhysics(Grid_Tiles**& grid_list, int grid_num, std::vector<sf::Color
 
 
             //Fire:
+            //if water around, fire dies
             if (grid_list[i][j].default_color == FIRE_COLOR) {
-                //how many neighbors are plants:
+               
                 sf::Color searched_color = WATER_COLOR;
                 int neighbor_count = 0;
                 for (int k = 0; k < color_map.size(); k++) {
@@ -259,16 +268,44 @@ void ConwaysPhysics(Grid_Tiles**& grid_list, int grid_num, std::vector<sf::Color
                     }
                 }
 
-                if (j+1<grid_num && grid_list[i][j+1].default_color == DEAD_COLOR 
-                    && grid_list[i][j + 1].temp_color == DEAD_COLOR) {
-                    grid_list[i][j + 1].temp_color = FIRE_COLOR;
-                    grid_list[i][j].temp_color = DEAD_COLOR;
-                }
+                
 
                 if (neighbor_count > 0) {
                     grid_list[i][j].temp_color = DEAD_COLOR;
                 }
+
+                
             }
+            //falling if below is empty
+            if (grid_list[i][j].default_color == FIRE_COLOR) {
+                if (j + 1 < grid_num && grid_list[i][j + 1].default_color == DEAD_COLOR
+                    && grid_list[i][j + 1].temp_color == DEAD_COLOR) {
+                    grid_list[i][j + 1].temp_color = FIRE_COLOR;
+                    grid_list[i][j].temp_color = DEAD_COLOR;
+                }
+            }
+            //if too much fire around, fire dies
+            if (grid_list[i][j].default_color == FIRE_COLOR) {
+                sf::Color searched_color = FIRE_COLOR;
+                int neighbor_count = 0;
+                for (int k = 0; k < color_map.size(); k++) {
+                    if (color_map[k].color == searched_color) {
+                        neighbor_count = color_map[k].count;
+                    }
+                }
+
+                if (neighbor_count > 5) {
+                    grid_list[i][j].temp_color = DEAD_COLOR;
+                }
+            }
+
+            if (grid_list[i][j].default_color == FIRE_COLOR || grid_list[i][j].temp_color == FIRE_COLOR) {
+                if (rand() % 10 == 0) {
+                    grid_list[i][j].temp_color = DEAD_COLOR;
+                }
+            }
+                
+
 
             //clear color_map so next cell can use it again
             color_map.clear();

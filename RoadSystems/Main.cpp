@@ -48,6 +48,8 @@ void MakeButtons(std::vector<Paint_Button>& color_button_list, std::vector<sf::C
 
 int main()
 {
+
+    srand(time(NULL)); //used for some randomness across the program
     //declaring all as needed:
     int sim_tpf = 5; //ticks per frame of simulations (sim_tpf = 2 means that only once per 2 frames there will be a simulation update)
     int time_speed = 5;
