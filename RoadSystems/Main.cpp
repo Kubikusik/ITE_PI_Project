@@ -41,8 +41,8 @@ void MakeButtons(std::vector<Paint_Button>& color_button_list, std::vector<sf::C
     color_button_list.push_back(fire_button);
     color_list.push_back(sf::Color(229, 81, 0));
     i++;
-    Paint_Button steam_button(0, i * (50 + margin), 50, "steam_b", "Steam", default_font, sf::Color(111, 106, 96));
-    color_button_list.push_back(steam_button);
+    Paint_Button steel_button(0, i * (50 + margin), 50, "steel_b", "Steel", default_font, sf::Color(111, 106, 96));
+    color_button_list.push_back(steel_button);
     color_list.push_back(sf::Color(111, 106, 96));
 }
 
