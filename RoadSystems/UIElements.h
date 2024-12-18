@@ -7,16 +7,47 @@
 //definitions:
 #define WHITE sf::Color(255,255,255)
 
+
+enum Substances {
+	DEAD,
+	WATER,
+	SAND,
+	FIRE,
+	PLANT,
+	STEEL,
+	STEAM,
+	CONWAY,
+	CABLE,
+	POWER
+	
+};
+
+void ChangeBackgroundColor(sf::Color color);
+sf::Color GetBgColor();
+
+
 #pragma once
 class Grid_Tiles {
 public:
+	Substances substance = DEAD;
+	Substances next_substance = DEAD;
 	sf::RectangleShape square;
-	sf::Color default_color = WHITE;
-	sf::Color temp_color = WHITE;
-	bool isBounceRight = false;
+	sf::Color default_color = GetBgColor();
+	short int way = 1;
+	bool isUpdated = false;
+	bool growing = true;
+	bool isFalling = false;
+	std::pair<int, int> direction = { 1,0 };
+
+	int x;
+	int y;
 
 	void Recolor(sf::Color color);
+	void UpdateSubstanceColor();
 };
+
+void UpdateGridBackground(Grid_Tiles**& grid_list, int grid_num, sf::Color new_bg_color);
+
 
 class UI_Element {
 public:
@@ -48,8 +79,10 @@ public:
 
 class Paint_Button : public Labeled_Button {
 public:
-	Paint_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font &default_font, sf::Color button_color) : Labeled_Button(x, y, size, name, label, default_font, button_color) {};
-	void ChangePaintColor(sf::Color& paint_color);
+	Substances substance;
+
+	Paint_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color, Substances set_substance);
+	void ChangePaintColor(sf::Color& paint_color, Substances &paint_substance);
 };
 
 class Save_Button : public Labeled_Button {
@@ -107,5 +140,39 @@ public:
 	void Clicked(sf::RenderWindow& window, bool simulate, int& time_speed, sf::Text& counter);
 };
 
+
+
+class Menu_Popup {
+public:
+
+	bool clicked = false;
+
+	void ToggleMenuPopup(sf::RenderWindow& main_window, sf::Font default_font);
+	void Release();
+
+	void MenuHandler(sf::RenderWindow& main_window, sf::Font default_font);
+
+};
+
+
+class Menu_Popup_Plus_Button : Plus_Button {
+public:
+	bool clicked = false;
+
+	Menu_Popup_Plus_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color) : Plus_Button(x, y, size, name, label, default_font, button_color) {};
+	void Clicked(sf::RenderWindow& window, sf::Color& bg_color, sf::Text& counter, sf::String option);
+	void DrawItself(sf::RenderWindow& window);
+	void Release();
+};
+
+class Menu_Popup_Minus_Button : Plus_Button {
+public:
+	bool clicked = false;
+
+	Menu_Popup_Minus_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color) : Plus_Button(x, y, size, name, label, default_font, button_color) {};
+	void Clicked(sf::RenderWindow& window, sf::Color& bg_color, sf::Text& counter, sf::String option);
+	void DrawItself(sf::RenderWindow& window);
+	void Release();
+};
 
 #endif

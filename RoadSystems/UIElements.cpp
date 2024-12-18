@@ -9,11 +9,87 @@
 const int margin = 20;
 sf::String image_format = ".png";
 
+
+
+//constants:
+//const sf::Color ALIVE_COLOR(255, 0, 0);
+sf::Color DEAD_COLOR(255, 255, 255);
+const sf::Color SAND_COLOR(246, 215, 176);
+const sf::Color PLANT_COLOR(53, 136, 86);
+const sf::Color WATER_COLOR(142, 194, 228);
+const sf::Color FIRE_COLOR(229, 81, 0);
+const sf::Color STEEL_COLOR(111, 106, 96);
+const sf::Color STEAM_COLOR(90, 90, 96);
+const sf::Color CONWAY_COLOR(5, 15, 45);
+
+const sf::Color CABLE_COLOR(45, 15, 45);
+const sf::Color POWER_COLOR(255,255,51);
+
+
+
+
+void ChangeBackgroundColor(sf::Color color) {
+    DEAD_COLOR = color;
+}
+
+
+
+
+sf::Color GetBgColor() {
+    return DEAD_COLOR;
+}
+
+
 //all elements have their functions below
+
+void UpdateGridBackground(Grid_Tiles** &grid_list, int grid_num, sf::Color new_bg_color) {
+    for (int row = 0; row < grid_num; row++) {
+        for (int column = 0; column < grid_num; column++) {
+            grid_list[row][column].default_color = new_bg_color;
+            grid_list[row][column].square.setFillColor(new_bg_color);
+        }
+    }
+}
 
 //Grid:
 void Grid_Tiles::Recolor(sf::Color color) {
     square.setFillColor(color);
+}
+
+void Grid_Tiles::UpdateSubstanceColor() {
+    substance = next_substance;
+    if (substance == DEAD) {
+        default_color = DEAD_COLOR;
+    }
+    else if (substance == SAND) {
+        default_color = SAND_COLOR;
+    }
+    else if (substance == PLANT) {
+        default_color = PLANT_COLOR;
+    }
+    else if (substance == WATER) {
+        default_color = WATER_COLOR;
+    }
+    else if (substance == FIRE) {
+        default_color = FIRE_COLOR;
+    }
+    else if (substance == STEEL) {
+        default_color = STEEL_COLOR;
+    }
+    else if (substance == STEAM) {
+        default_color = STEAM_COLOR;
+    }
+    else if (substance == CONWAY) {
+        default_color = CONWAY_COLOR;
+    }
+    else if (substance == CABLE) {
+        default_color = CABLE_COLOR;
+    }
+    else if (substance == POWER) {
+        default_color = POWER_COLOR;
+    }
+
+    Recolor(default_color);
 }
 
 //UI_Element:
@@ -63,8 +139,16 @@ void Labeled_Button::Recolor(sf::Color color) {
 
 
 //Paint_Button:
-void Paint_Button::ChangePaintColor(sf::Color& paint_color) {
+
+Paint_Button::Paint_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color, Substances set_substance) :Labeled_Button(x, y, size, name, label, default_font, button_color) {
+    substance = set_substance;
+}
+
+
+void Paint_Button::ChangePaintColor(sf::Color& paint_color, Substances &paint_substance) {
     paint_color = default_color;
+    paint_substance = substance;
+
 }
 
 
@@ -321,4 +405,162 @@ void Plus_Time_Button::Clicked(sf::RenderWindow& window, bool simulate, int& tim
     else Recolor(default_color);
 
     clicked = true;
+}
+
+
+void Menu_Popup::ToggleMenuPopup(sf::RenderWindow& main_window, sf::Font default_font) {
+    printf("Opening menu\n");
+    MenuHandler(main_window, default_font);
+    clicked = true;
+}
+
+void Menu_Popup::Release() {
+    clicked = false;
+}
+
+void Menu_Popup::MenuHandler(sf::RenderWindow& main_window, sf::Font default_font) {
+    int menu_size_x = 600;
+    int menu_size_y = 600;
+    sf::RenderWindow menu_window(sf::VideoMode(menu_size_x, menu_size_y), "SideMenu", sf::Style::None);
+
+    sf::Color bg_color = GetBgColor(); // Get current background color
+
+    // Red color adjustment buttons
+    Menu_Popup_Plus_Button increase_R(50, 50, 50, "plus_r", "+", default_font, sf::Color(200, 0, 0));
+    Menu_Popup_Minus_Button decrease_R(100, 50, 50, "minus_r", "-", default_font, sf::Color(200, 0, 0));
+
+    // Green color adjustment buttons
+    Menu_Popup_Plus_Button increase_G(50, 150, 50, "plus_g", "+", default_font, sf::Color(0, 200, 0));
+    Menu_Popup_Minus_Button decrease_G(100, 150, 50, "minus_g", "-", default_font, sf::Color(0, 200, 0));
+
+    // Blue color adjustment buttons
+    Menu_Popup_Plus_Button increase_B(50, 250, 50, "plus_b", "+", default_font, sf::Color(0, 0, 200));
+    Menu_Popup_Minus_Button decrease_B(100, 250, 50, "minus_b", "-", default_font, sf::Color(0, 0, 200));
+
+    sf::Text color_display;
+    color_display.setFont(default_font);
+    color_display.setCharacterSize(20);
+    color_display.setPosition(300, 50);
+    color_display.setFillColor(sf::Color::Black);
+
+    sf::Event event;
+    while (menu_window.isOpen()) {
+        while (menu_window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                menu_window.close();
+            }
+
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                menu_window.close();
+            }
+        }
+
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            increase_R.Clicked(menu_window, bg_color, color_display, "r");
+            decrease_R.Clicked(menu_window, bg_color, color_display, "r");
+
+            increase_G.Clicked(menu_window, bg_color, color_display, "g");
+            decrease_G.Clicked(menu_window, bg_color, color_display, "g");
+
+            increase_B.Clicked(menu_window, bg_color, color_display, "b");
+            decrease_B.Clicked(menu_window, bg_color, color_display, "b");
+
+            ChangeBackgroundColor(bg_color); // Update the global background color
+        }
+        else {
+            increase_R.Release(); // Reset clicked state
+            decrease_R.Release();
+
+            increase_G.Release(); // Reset clicked state
+            decrease_G.Release();
+
+            increase_B.Release(); // Reset clicked state
+            decrease_B.Release();
+        }
+
+        color_display.setString("R: " + std::to_string(bg_color.r) +
+            " G: " + std::to_string(bg_color.g) +
+            " B: " + std::to_string(bg_color.b));
+
+        menu_window.clear(bg_color); // Use current background color for the menu
+        increase_R.DrawItself(menu_window);
+        decrease_R.DrawItself(menu_window);
+        increase_G.DrawItself(menu_window);
+        decrease_G.DrawItself(menu_window);
+        increase_B.DrawItself(menu_window);
+        decrease_B.DrawItself(menu_window);
+        menu_window.draw(color_display);
+        menu_window.display();
+    }
+}
+
+
+void Menu_Popup_Plus_Button::DrawItself(sf::RenderWindow& window) {
+    window.draw(square);
+    window.draw(button_label);
+}
+
+void Menu_Popup_Minus_Button::DrawItself(sf::RenderWindow& window) {
+    window.draw(square);
+    window.draw(button_label);
+}
+
+
+void Menu_Popup_Plus_Button::Clicked(sf::RenderWindow& window, sf::Color& bg_color, sf::Text& counter, sf::String option) {
+    if (square.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))) {
+        Recolor(sf::Color(abs(default_color.r - 60), abs(default_color.g - 60), abs(default_color.b - 60)));
+
+        if (!clicked) { // Only process the click if it hasn't already been handled
+            if (option == "r" && bg_color.r < 245) {
+                bg_color.r += 10;
+                counter.setString("background (R): " + std::to_string(bg_color.r));
+            }
+            if (option == "g" && bg_color.g < 245) {
+                bg_color.g += 10;
+                counter.setString("background (G): " + std::to_string(bg_color.g));
+            }
+            if (option == "b" && bg_color.b < 245) {
+                bg_color.b += 10;
+                counter.setString("background (B): " + std::to_string(bg_color.b));
+            }
+
+            clicked = true; // Mark as clicked
+        }
+    }
+    else {
+        Recolor(default_color);
+    }
+}
+
+void Menu_Popup_Plus_Button::Release() {
+    clicked = false; // Reset the clicked flag
+}
+
+void Menu_Popup_Minus_Button::Clicked(sf::RenderWindow& window, sf::Color& bg_color, sf::Text& counter, sf::String option) {
+    if (square.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))) {
+        //Hovering mouse over cell:
+        Recolor(sf::Color(abs(default_color.r - 60), abs(default_color.g - 60), abs(default_color.b - 60)));
+
+        if (!clicked) {
+            if (option == "r" && bg_color.r > 9) {
+                bg_color.r -= 10;
+                counter.setString("background (R): " + std::to_string(bg_color.r));
+            }
+            if (option == "g" && bg_color.g > 9) {
+                bg_color.g -= 10;
+                counter.setString("background (G): " + std::to_string(bg_color.g));
+            }
+            if (option == "b" && bg_color.b > 9) {
+                bg_color.b -= 10;
+                counter.setString("background (B): " + std::to_string(bg_color.b));
+            }
+        }
+        else Recolor(default_color);
+
+        clicked = true;
+    }
+}
+
+void Menu_Popup_Minus_Button::Release() {
+    clicked = false; // Reset the clicked flag
 }

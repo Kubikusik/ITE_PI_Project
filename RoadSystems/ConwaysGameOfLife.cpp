@@ -30,7 +30,7 @@ int CountNeighbors(int start_x, int start_y, int end_x, int end_y, int x, int y,
     return neigbor_counter;
 }
 
-
+/*
 //classic Conway's Game Of Life, (mostly for learning use - DEPRECATED)
 void ConwaysGameOfLife(Grid_Tiles**& grid_list, int grid_num) {
     int neighbor_counter;
@@ -119,3 +119,4 @@ void ConwaysGameOfLifeManyColor(Grid_Tiles**& grid_list, int grid_num, std::vect
         }
     }
 }
+*/

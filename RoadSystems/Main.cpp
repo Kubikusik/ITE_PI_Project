@@ -1,49 +1,51 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "UIElements.h"
-#include "ConwaysGameOfLife.h"
+//#include "ConwaysGameOfLife.h"
 #include "ConwaysGameOfLifeMaksiowy.h"
 
 //ui consts
 const int grid_size = 19;
 const int button_size = 49;
 const int ui_size = 300;
-const int grid_num = 40;
+const int grid_num = 42;
 const int map_x = grid_num * (grid_size + 1);
 const int map_y = grid_num * (grid_size + 1);
 const int margin = 20;
 sf::Font default_font;
 
 
-//simulation consts
-
-const sf::Color ALIVE_COLOR(255, 0, 0);
-const sf::Color DEAD_COLOR(255, 255, 255);
-
-
 //Function for making all the color buttons (all substances)
 void MakeButtons(std::vector<Paint_Button>& color_button_list, std::vector<sf::Color>& color_list) {
 
     int i = 0;
-    Paint_Button sand_button(0, i*(50+margin), 50, "yellow_b", "Sand", default_font, sf::Color(246, 215, 176));
+    Paint_Button sand_button(0, i*(50+margin), 50, "yellow_b", "Sand", default_font, sf::Color(246, 215, 176), SAND);
     color_button_list.push_back(sand_button);
     color_list.push_back(sf::Color(246, 215, 176));
     i++;
-    Paint_Button plant_button(0, i * (50 + margin), 50, "green_b", "plant", default_font, sf::Color(53, 136, 86));
+    Paint_Button plant_button(0, i * (50 + margin), 50, "green_b", "plant", default_font, sf::Color(53, 136, 86), PLANT);
     color_button_list.push_back(plant_button);
     color_list.push_back(sf::Color(53, 136, 86));
     i++;
-    Paint_Button water_button(0, i * (50 + margin), 50, "water_b", "Water", default_font, sf::Color(142, 194, 228));
+    Paint_Button water_button(0, i * (50 + margin), 50, "water_b", "Water", default_font, sf::Color(142, 194, 228), WATER);
     color_button_list.push_back(water_button);
     color_list.push_back(sf::Color(142, 194, 228));
     i++;
-    Paint_Button fire_button(0, i * (50 + margin), 50, "red_b", "Fire", default_font, sf::Color(229, 81, 0));
+    Paint_Button fire_button(0, i * (50 + margin), 50, "red_b", "Fire", default_font, sf::Color(229, 81, 0), FIRE);
     color_button_list.push_back(fire_button);
     color_list.push_back(sf::Color(229, 81, 0));
     i++;
-    Paint_Button steam_button(0, i * (50 + margin), 50, "steam_b", "Steam", default_font, sf::Color(111, 106, 96));
-    color_button_list.push_back(steam_button);
+    Paint_Button steel_button(0, i * (50 + margin), 50, "steel_b", "Steel", default_font, sf::Color(111, 106, 96), STEEL);
+    color_button_list.push_back(steel_button);
     color_list.push_back(sf::Color(111, 106, 96));
+    i++;
+    Paint_Button conway_button(0, i * (50 + margin), 50, "conway_b", "Conways", default_font, sf::Color(5, 15, 45), CONWAY);
+    color_button_list.push_back(conway_button);
+    color_list.push_back(sf::Color(5, 15, 45));
+    i++;
+    Paint_Button cable_button(0, i * (50 + margin), 50, "cable_b", "Cable", default_font, sf::Color(45, 15, 45), CABLE);
+    color_button_list.push_back(cable_button);
+    color_list.push_back(sf::Color(45, 15, 45));
 }
 
 int main()
@@ -51,17 +53,23 @@ int main()
 
     srand(time(NULL)); //used for some randomness across the program
     //declaring all as needed:
-    int sim_tpf = 5; //ticks per frame of simulations (sim_tpf = 2 means that only once per 2 frames there will be a simulation update)
+    int sim_tpf = 1; //ticks per frame of simulations (sim_tpf = 2 means that only once per 2 frames there will be a simulation update)
     int time_speed = 5;
     default_font.loadFromFile("OpenSansRegular.ttf"); //loading the font used in all text
     int delta = 0; //delta time for simulation use
     int brush_size = 1;
+    sf::Color bg_color(250, 250, 250);
+    ChangeBackgroundColor(bg_color);
+
+
+    
 
 
     int searched_x, searched_y = 0; //needed for searching mouse position on screen
     bool is_focused = true; //is window being focused on
     bool simulate = false; //is simulation running
     sf::Color paint_color(246, 215, 176); //default left click color (sand)
+    Substances paint_substance = SAND; //default left click substance (sand)
     sf::RenderWindow window(sf::VideoMode(map_x + ui_size, map_y), "Klocki LOL", sf::Style::Close); //initialasing the window
     std::vector<sf::Color> color_list; //list of all colors of buttons, given to other functions
     
@@ -71,15 +79,17 @@ int main()
     std::vector<Paint_Button> button_list; //list of color buttons (all the ones that give substance)
 
     sf::Image image; //image used for importing/exporting maps
-    image.create(grid_num*(grid_size+1), grid_num*(grid_size + 1), sf::Color(255,255,255)); //making white image as basis
+    image.create(grid_num*(grid_size+1), grid_num*(grid_size + 1), GetBgColor()); //making white image as basis
 
     Grid_Tiles** grid_list = new Grid_Tiles *[grid_num]; //making a 2d array of objects of type Grid_Tiles (from "UIElements.h")
     for (int row = 0; row < grid_num; row++) {
         grid_list[row] = new Grid_Tiles[grid_num];
         for (int column = 0; column < grid_num; column++) {
-            grid_list[row][column].square.setFillColor(sf::Color(255, 255, 255)); //default color = white
+            grid_list[row][column].square.setFillColor(GetBgColor()); //default color = white
             grid_list[row][column].square.setPosition(sf::Vector2f(ui_size + row * (grid_size+1), column * (grid_size + 1)));
             grid_list[row][column].square.setSize(sf::Vector2f(grid_size, grid_size));
+            grid_list[row][column].x = row;
+            grid_list[row][column].y = column;
         }
     }
 
@@ -87,7 +97,7 @@ int main()
 
 
     //continuing button creation, functionality buttons
-    int enumerator_of_button = 5;
+    int enumerator_of_button = 7;
     Save_Button save_button(0, enumerator_of_button *(50 + margin), 50, "save_b", "Save", default_font, sf::Color(50, 50, 50));
     enumerator_of_button++;
     Load_Button load_button(0, enumerator_of_button *(50 + margin), 50, "load_b", "Load", default_font, sf::Color(50, 50, 50));
@@ -103,18 +113,36 @@ int main()
     Plus_Time_Button decrease_time_button(5 * 50, enumerator_of_button * (50 + margin), 50, "plus_t_b", "+", default_font, sf::Color(255, 255, 255,10));
     Labeled_Button time_speed_label(-margin / 2, enumerator_of_button * (50 + margin), 50, "time_counter", "time speed:" + std::to_string(sim_tpf), default_font, sf::Color(0, 0, 0, 0));
     //main loop, running while window wasnt closed yet
+
+
+    Menu_Popup menu_popup;
+
     while (window.isOpen())
     {
+        
         //checking if any event happened
         sf::Event event;
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)        //if window is closed
                 window.close();
-            if (event.type == sf::Event::GainedFocus)   //if window in focus
+            if (event.type == sf::Event::GainedFocus) {   //if window in focus
                 is_focused = true;
-            if (event.type == sf::Event::LostFocus)     //if window is out of focus
+                window.setActive(true);
+            }
+            if (event.type == sf::Event::LostFocus) {    //if window is out of focus
                 is_focused = false;
+                window.setActive(false);
+            }
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape && is_focused) { //escape pressed closes window
+                window.close();
+            }
+
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space && is_focused) {
+                menu_popup.ToggleMenuPopup(window, default_font);
+                is_focused = false; // Main window loses focus
+                UpdateGridBackground(grid_list, grid_num, GetBgColor());
+            }
 
             if (is_focused) {
                 if (event.type == sf::Event::MouseWheelMoved) {
@@ -136,8 +164,6 @@ int main()
                 
                 //if window is being focused on
                 if (is_focused) {
-
-                    
 
                     //get position in pixels and translate it to what grid tile is that:
                     sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
@@ -163,6 +189,7 @@ int main()
                             for (int x = minimal_x; x <= maximal_x; x++) {
                                 for (int y = minimal_y; y <= maximal_y; y++) {
                                     grid_list[x][y].default_color = paint_color;
+                                    grid_list[x][y].substance = paint_substance;
                                 }
                             }
                         }
@@ -179,7 +206,8 @@ int main()
 
                             for (int x = minimal_x; x <= maximal_x; x++) {
                                 for (int y = minimal_y; y <= maximal_y; y++) {
-                                    grid_list[x][y].default_color = sf::Color(255, 255, 255);
+                                    grid_list[x][y].default_color = GetBgColor();
+                                    grid_list[x][y].substance = DEAD;
                                 }
                             }
                             
@@ -190,13 +218,6 @@ int main()
                 
             }
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) { //escape pressed closes window
-            window.close();
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) { //Space pressed closes window
-            window.close();
-        }
-        
 
         //setting what color each button on keyboard does:
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) paint_color = button_list[0].default_color;
@@ -222,7 +243,7 @@ int main()
 
                 //Left-clicking hovered-over cell = adding smth:
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                    each.ChangePaintColor(paint_color);
+                    each.ChangePaintColor(paint_color, paint_substance);
                 }
                 else each.Recolor(each.default_color);
 
@@ -322,6 +343,7 @@ int main()
         delta = delta % sim_tpf;
 
     }
+
 
     return 0;
 }
