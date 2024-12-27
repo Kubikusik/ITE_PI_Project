@@ -16,6 +16,12 @@ std::string FileManager::GetLocation() {
 	HRESULT hr; //used for error checking
 	IFileOpenDialog* pFileOpen; //used for opening file dialog
 
+    // Initialize COM library
+    hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+    if (FAILED(hr)) {
+        return std::string();
+    }
+
     // Create the FileOpenDialog object
     hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
     if (FAILED(hr)) {
@@ -46,7 +52,7 @@ std::string FileManager::GetLocation() {
                 // Convert the file path to a std::string
 				std::wstring ws(pszFilePath); //convert to wstring
 				std::string filePath(ws.begin(), ws.end()); //convert to string
-				CoTaskMemFree(pszFilePath); //free the memory
+				CoTaskMemFree(pszFilePath); //free the 
 				pItem->Release(); //release the item
 				pFileOpen->Release(); //release the dialog
 				CoUninitialize(); //uninitialize the COM library
@@ -63,7 +69,13 @@ std::string FileManager::GetLocation() {
 
 std::string FileManager::SaveLocation() {
     HRESULT hr; //used for error checking
-    IFileSaveDialog* pFileSave; //used for saving file dialog
+    IFileSaveDialog* pFileSave = nullptr; //used for saving file dialog
+
+	// Initialize COM library, prevents memory leaks and 0xcccccccc errors
+    hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+    if (FAILED(hr)) {
+        return std::string();
+    }
 
     // Create the FileSaveDialog object
     hr = CoCreateInstance(CLSID_FileSaveDialog, NULL, CLSCTX_INPROC_SERVER, IID_IFileSaveDialog, reinterpret_cast<void**>(&pFileSave));

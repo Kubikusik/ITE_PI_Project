@@ -136,7 +136,7 @@ int main()
                 window.setActive(false);
             }
 
-            if (event.type == sf::Event::Resized)       //if window is 
+			if (event.type == sf::Event::Resized)       //if window is resized
             {
                 // update the view to the new size of the window
                 sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
