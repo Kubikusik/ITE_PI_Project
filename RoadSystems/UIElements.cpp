@@ -223,7 +223,7 @@ void Load_Button::Clicked(sf::RenderWindow& window, bool simulate, sf::Image& im
                 //Clear grid (WIP: will have popup notification)
                 for (int i = 0; i < grid_num; i++) {
                     for (int j = 0; j < grid_num; j++) {
-                        grid_list[i][j].default_color = WHITE;
+                        grid_list[i][j].default_color = DEAD_COLOR;
                     }
                 }
 
