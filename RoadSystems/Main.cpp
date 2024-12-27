@@ -141,6 +141,7 @@ int main()
                 // update the view to the new size of the window
                 sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
                 window.setView(sf::View(visibleArea));
+
             }
 
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape && is_focused) { //escape pressed closes window
@@ -228,10 +229,12 @@ int main()
             }
         }
 
-        //setting what color each button on keyboard does:
+        //setting what color each button on keyboard does - deprecated:
+        /*
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) paint_color = button_list[0].default_color;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::G)) paint_color = button_list[1].default_color;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::B)) paint_color = button_list[2].default_color;
+        */
 
 
         //recolor back after hovering
