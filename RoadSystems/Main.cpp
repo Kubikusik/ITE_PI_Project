@@ -148,7 +148,8 @@ int main()
                 window.close();
             }
 
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space && is_focused) {
+            //Menu under space button:
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space && is_focused && !simulate) {
                 menu_popup.ToggleMenuPopup(window, default_font);
                 is_focused = false; // Main window loses focus
                 UpdateGridBackground(grid_list, grid_num, GetBgColor());

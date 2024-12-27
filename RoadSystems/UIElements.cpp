@@ -45,8 +45,13 @@ sf::Color GetBgColor() {
 void UpdateGridBackground(Grid_Tiles** &grid_list, int grid_num, sf::Color new_bg_color) {
     for (int row = 0; row < grid_num; row++) {
         for (int column = 0; column < grid_num; column++) {
-            grid_list[row][column].default_color = new_bg_color;
+            if (grid_list[row][column].substance == DEAD) {
+                grid_list[row][column].default_color = new_bg_color;
+            }
             grid_list[row][column].square.setFillColor(new_bg_color);
+
+                
+            
         }
     }
 }
