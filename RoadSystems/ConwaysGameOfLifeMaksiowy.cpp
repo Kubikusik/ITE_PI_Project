@@ -267,9 +267,9 @@ void PlantUpdate(Grid_Tiles**& grid_list, int grid_num, int i, int j) {
             }
 
         }
-        /*
+        
         //left:
-        if (!is_grown && rand()%20 == 0 && empty_neigbors>=5) {
+        if (!is_grown && rand()%20 == 0 && empty_neigbors>=6) {
             for (int k = 1; k < growth_rate; k++) {
                 if (IsViableLocation(grid_list, grid_num, i - k, j, DEAD)) {
                     grid_list[i - k][j].next_substance = PLANT;
@@ -284,7 +284,7 @@ void PlantUpdate(Grid_Tiles**& grid_list, int grid_num, int i, int j) {
         }
 
         //right:
-        if (!is_grown && rand() % 20 == 0 && empty_neigbors >= 5) {
+        if (!is_grown && rand() % 20 == 0 && empty_neigbors >= 6) {
             for (int k = 1; k < growth_rate; k++) {
                 if (IsViableLocation(grid_list, grid_num, i + k, j, DEAD) ) {
                     grid_list[i + k][j].next_substance = PLANT;
@@ -296,7 +296,7 @@ void PlantUpdate(Grid_Tiles**& grid_list, int grid_num, int i, int j) {
                 }
                 else break;
             }
-        }*/
+        }
     }
 
     /*if (grid_list[i][j].growing = false) {
