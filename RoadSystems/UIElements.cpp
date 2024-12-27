@@ -8,7 +8,7 @@
 #define WHITE sf::Color(255,255,255)
 const int margin = 20;
 sf::String image_format = ".png";
-
+int font_size = 30;
 
 
 //constants:
@@ -123,7 +123,7 @@ Labeled_Button::Labeled_Button(int x, int y, int size, sf::String name,sf::Strin
     //text next to button parameters initialization
     button_label.setFont(default_font);
     button_label.setString(label);
-    button_label.setCharacterSize(30);
+    button_label.setCharacterSize(font_size);
     button_label.setFillColor(WHITE);
     button_label.setScale(sf::Vector2f(1, 1));
     button_label.setPosition(sf::Vector2f(x + size + margin, y));

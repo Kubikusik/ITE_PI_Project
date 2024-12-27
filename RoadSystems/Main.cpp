@@ -6,7 +6,7 @@
 
 //ui consts
 const int grid_size = 19;
-const int button_size = 49;
+const int button_size = 50;
 const int ui_size = 300;
 const int grid_num = 42;
 const int map_x = grid_num * (grid_size + 1);
@@ -19,31 +19,31 @@ sf::Font default_font;
 void MakeButtons(std::vector<Paint_Button>& color_button_list, std::vector<sf::Color>& color_list) {
 
     int i = 0;
-    Paint_Button sand_button(0, i*(50+margin), 50, "yellow_b", "Sand", default_font, sf::Color(246, 215, 176), SAND);
+    Paint_Button sand_button(0, i*(button_size + margin), button_size, "yellow_b", "Sand", default_font, sf::Color(246, 215, 176), SAND);
     color_button_list.push_back(sand_button);
     color_list.push_back(sf::Color(246, 215, 176));
     i++;
-    Paint_Button plant_button(0, i * (50 + margin), 50, "green_b", "plant", default_font, sf::Color(53, 136, 86), PLANT);
+    Paint_Button plant_button(0, i * (button_size + margin), button_size, "green_b", "plant", default_font, sf::Color(53, 136, 86), PLANT);
     color_button_list.push_back(plant_button);
     color_list.push_back(sf::Color(53, 136, 86));
     i++;
-    Paint_Button water_button(0, i * (50 + margin), 50, "water_b", "Water", default_font, sf::Color(142, 194, 228), WATER);
+    Paint_Button water_button(0, i * (button_size + margin), button_size, "water_b", "Water", default_font, sf::Color(142, 194, 228), WATER);
     color_button_list.push_back(water_button);
     color_list.push_back(sf::Color(142, 194, 228));
     i++;
-    Paint_Button fire_button(0, i * (50 + margin), 50, "red_b", "Fire", default_font, sf::Color(229, 81, 0), FIRE);
+    Paint_Button fire_button(0, i * (button_size + margin), button_size, "red_b", "Fire", default_font, sf::Color(229, 81, 0), FIRE);
     color_button_list.push_back(fire_button);
     color_list.push_back(sf::Color(229, 81, 0));
     i++;
-    Paint_Button steel_button(0, i * (50 + margin), 50, "steel_b", "Steel", default_font, sf::Color(111, 106, 96), STEEL);
+    Paint_Button steel_button(0, i * (button_size + margin), button_size, "steel_b", "Steel", default_font, sf::Color(111, 106, 96), STEEL);
     color_button_list.push_back(steel_button);
     color_list.push_back(sf::Color(111, 106, 96));
     i++;
-    Paint_Button conway_button(0, i * (50 + margin), 50, "conway_b", "Conways", default_font, sf::Color(5, 15, 45), CONWAY);
+    Paint_Button conway_button(0, i * (button_size + margin), button_size, "conway_b", "Nanomachine", default_font, sf::Color(5, 15, 45), CONWAY);
     color_button_list.push_back(conway_button);
     color_list.push_back(sf::Color(5, 15, 45));
     i++;
-    Paint_Button cable_button(0, i * (50 + margin), 50, "cable_b", "Cable", default_font, sf::Color(45, 15, 45), CABLE);
+    Paint_Button cable_button(0, i * (button_size + margin), button_size, "cable_b", "Cable", default_font, sf::Color(45, 15, 45), CABLE);
     color_button_list.push_back(cable_button);
     color_list.push_back(sf::Color(45, 15, 45));
 }
@@ -61,7 +61,6 @@ int main()
     sf::Color bg_color(250, 250, 250);
     ChangeBackgroundColor(bg_color);
 
-
     
 
 
@@ -70,11 +69,13 @@ int main()
     bool simulate = false; //is simulation running
     sf::Color paint_color(246, 215, 176); //default left click color (sand)
     Substances paint_substance = SAND; //default left click substance (sand)
-    sf::RenderWindow window(sf::VideoMode(map_x + ui_size, map_y), "Klocki LOL", sf::Style::Close); //initialasing the window
+    sf::RenderWindow window(sf::VideoMode(map_x + ui_size, map_y), "Klocki LOL", sf::Style::Default); //initialasing the window
     std::vector<sf::Color> color_list; //list of all colors of buttons, given to other functions
     
     window.setFramerateLimit(60); //stable framerate, so the simulation is constant and not changing with processing power fluctuactions
-    
+    //sf::View view = window.getDefaultView();
+    //view.zoom(2.0f);
+    //window.setView(view);
     
     std::vector<Paint_Button> button_list; //list of color buttons (all the ones that give substance)
 
@@ -98,20 +99,20 @@ int main()
 
     //continuing button creation, functionality buttons
     int enumerator_of_button = 7;
-    Save_Button save_button(0, enumerator_of_button *(50 + margin), 50, "save_b", "Save", default_font, sf::Color(50, 50, 50));
+    Save_Button save_button(0, enumerator_of_button *(button_size + margin), button_size, "save_b", "Save", default_font, sf::Color(50, 50, 50));
     enumerator_of_button++;
-    Load_Button load_button(0, enumerator_of_button *(50 + margin), 50, "load_b", "Load", default_font, sf::Color(50, 50, 50));
+    Load_Button load_button(0, enumerator_of_button *(button_size + margin), button_size, "load_b", "Load", default_font, sf::Color(50, 50, 50));
     enumerator_of_button++;
-    Simulate_Button simulate_button(0, enumerator_of_button * (50 + margin), 50, "sim_b", "Run", default_font, sf::Color(255, 0, 0));
+    Simulate_Button simulate_button(0, enumerator_of_button * (button_size + margin), button_size, "sim_b", "Run", default_font, sf::Color(255, 0, 0));
     enumerator_of_button++;
     
-    Minus_Button decrease_brush_button(0, enumerator_of_button * (50 + margin), 50, "minus_b", "-", default_font, sf::Color(255, 255, 255, 10));
-    Plus_Button increase_brush_button(5*50, enumerator_of_button * (50 + margin), 50, "plus_b", "+", default_font, sf::Color(255, 255, 255, 10));
-    Labeled_Button brush_size_label(-margin/2, enumerator_of_button * (50 + margin), 50, "brush_counter", "brush size:" + std::to_string(brush_size), default_font, sf::Color(0, 0, 0, 0));
+    Minus_Button decrease_brush_button(0, enumerator_of_button * (button_size + margin), button_size, "minus_b", "-", default_font, sf::Color(255, 255, 255, 10));
+    Plus_Button increase_brush_button(5* button_size, enumerator_of_button * (button_size + margin), button_size, "plus_b", "+", default_font, sf::Color(255, 255, 255, 10));
+    Labeled_Button brush_size_label(-margin/2, enumerator_of_button * (button_size + margin), button_size, "brush_counter", "brush size:" + std::to_string(brush_size), default_font, sf::Color(0, 0, 0, 0));
     enumerator_of_button++;
-    Minus_Time_Button increase_time_button(0, enumerator_of_button * (50 + margin), 50, "minus_t_b", "-", default_font, sf::Color(255, 255, 255,10));
-    Plus_Time_Button decrease_time_button(5 * 50, enumerator_of_button * (50 + margin), 50, "plus_t_b", "+", default_font, sf::Color(255, 255, 255,10));
-    Labeled_Button time_speed_label(-margin / 2, enumerator_of_button * (50 + margin), 50, "time_counter", "time speed:" + std::to_string(sim_tpf), default_font, sf::Color(0, 0, 0, 0));
+    Minus_Time_Button increase_time_button(0, enumerator_of_button * (button_size + margin), button_size, "minus_t_b", "-", default_font, sf::Color(255, 255, 255,10));
+    Plus_Time_Button decrease_time_button(5 * button_size, enumerator_of_button * (button_size + margin), button_size, "plus_t_b", "+", default_font, sf::Color(255, 255, 255,10));
+    Labeled_Button time_speed_label(-margin / 2, enumerator_of_button * (button_size + margin), button_size, "time_counter", "time speed:" + std::to_string(sim_tpf), default_font, sf::Color(0, 0, 0, 0));
     //main loop, running while window wasnt closed yet
 
 
@@ -134,6 +135,14 @@ int main()
                 is_focused = false;
                 window.setActive(false);
             }
+
+            if (event.type == sf::Event::Resized)       //if window is 
+            {
+                // update the view to the new size of the window
+                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+                window.setView(sf::View(visibleArea));
+            }
+
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape && is_focused) { //escape pressed closes window
                 window.close();
             }
