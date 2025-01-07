@@ -141,20 +141,6 @@ public:
 };
 
 
-
-class Menu_Popup {
-public:
-
-	bool clicked = false;
-
-	void ToggleMenuPopup(sf::RenderWindow& main_window, sf::Font default_font);
-	void Release();
-
-	void MenuHandler(sf::RenderWindow& main_window, sf::Font default_font);
-
-};
-
-
 class Menu_Popup_Plus_Button : Plus_Button {
 public:
 	bool clicked = false;

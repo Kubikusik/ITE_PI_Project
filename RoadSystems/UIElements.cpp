@@ -416,7 +416,7 @@ void Plus_Time_Button::Clicked(sf::RenderWindow& window, bool simulate, int& tim
     clicked = true;
 }
 
-
+/*
 void Menu_Popup::ToggleMenuPopup(sf::RenderWindow& main_window, sf::Font default_font) {
     printf("Opening menu\n");
     MenuHandler(main_window, default_font);
@@ -502,6 +502,7 @@ void Menu_Popup::MenuHandler(sf::RenderWindow& main_window, sf::Font default_fon
         menu_window.display();
     }
 }
+*/
 
 
 void Menu_Popup_Plus_Button::DrawItself(sf::RenderWindow& window) {

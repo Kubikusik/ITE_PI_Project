@@ -3,6 +3,7 @@
 #include "UIElements.h"
 //#include "ConwaysGameOfLife.h"
 #include "ConwaysGameOfLifeMaksiowy.h"
+#include "Menu_Popup.h"
 
 //ui consts
 const int grid_size = 19;
@@ -115,11 +116,11 @@ int main()
     Labeled_Button time_speed_label(-margin / 2, enumerator_of_button * (button_size + margin), button_size, "time_counter", "time speed:" + std::to_string(sim_tpf), default_font, sf::Color(0, 0, 0, 0));
     //main loop, running while window wasnt closed yet
 
-
-    Menu_Popup menu_popup;
-
+    bool isNewFrame = true;
+    MenuPopup menu_popup(&window, default_font);
     while (window.isOpen())
     {
+        isNewFrame = true;
         
         //checking if any event happened
         sf::Event event;
@@ -134,6 +135,7 @@ int main()
             if (event.type == sf::Event::LostFocus) {    //if window is out of focus
                 is_focused = false;
                 window.setActive(false);
+                window.clear(GetBgColor());
             }
 
 			if (event.type == sf::Event::Resized)       //if window is resized
@@ -149,13 +151,96 @@ int main()
             }
 
             //Menu under space button:
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space && is_focused && !simulate) {
-                menu_popup.ToggleMenuPopup(window, default_font);
-                is_focused = false; // Main window loses focus
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space && is_focused && !simulate && isNewFrame) {
+                //menu_popup.ToggleMenuPopup(window, default_font);
+                //is_focused = false; // Main window loses focus
                 UpdateGridBackground(grid_list, grid_num, GetBgColor());
+                menu_popup.isVisible = !menu_popup.isVisible;
+                isNewFrame = false;
             }
 
-            if (is_focused) {
+            if (is_focused && !menu_popup.isVisible) {
+
+                //Save Button cliking
+                save_button.Clicked(window, simulate, image, grid_num, grid_size, grid_list);
+
+                //Load Button clicking
+                load_button.Clicked(window, simulate, image, grid_num, grid_size, grid_list);
+                
+                //recolor back after hovering
+                for (int i = 0; i < grid_num; i++) {
+                    for (int j = 0; j < grid_num; j++) {
+                        grid_list[i][j].Recolor(grid_list[i][j].default_color);
+                    }
+                }
+
+                //Color buttons interactions
+                for (auto& each : button_list) {
+
+                    if (each.square.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))) {
+
+                        //Hovering mouse over cell:
+                        each.Recolor(sf::Color(abs(each.default_color.r - 60), abs(each.default_color.g - 60), abs(each.default_color.b - 60)));
+
+
+                        //Left-clicking hovered-over cell = adding smth:
+                        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                            each.ChangePaintColor(paint_color, paint_substance);
+                        }
+                        else each.Recolor(each.default_color);
+
+                    }
+                }
+
+
+
+                //BRUSH CONTROLS
+                //Plus Button clicking
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    increase_brush_button.Clicked(window, simulate, brush_size, brush_size_label.button_label, grid_num);
+                }
+                else increase_brush_button.Release();
+                //Minus Button clicking
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    decrease_brush_button.Clicked(window, simulate, brush_size, brush_size_label.button_label);
+                }
+                else decrease_brush_button.Release();
+
+
+                //TIME CONTROLS
+                //Plus time Button clicking
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    increase_time_button.Clicked(window, simulate, time_speed, time_speed_label.button_label);
+                    sim_tpf = 21 - time_speed;
+                }
+                else increase_time_button.Release();
+                //Minus time Button clicking
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    decrease_time_button.Clicked(window, simulate, time_speed, time_speed_label.button_label);
+                    sim_tpf = 21 - time_speed;
+                }
+                else decrease_time_button.Release();
+
+
+                //Start simulation button
+                if (simulate_button.square.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))) {
+                    //Hovering mouse over cell:
+
+                    simulate_button.Recolor(sf::Color(abs(simulate_button.default_color.r - 60), abs(simulate_button.default_color.g - 60), abs(simulate_button.default_color.b - 60)));
+
+
+                    //Left-clicking hovered-over cell = adding smth:
+                    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                        simulate_button.ToggleSimulate(simulate);
+                    }
+                    else {
+                        simulate_button.Release();
+                    }
+                }
+                else {
+                    simulate_button.Recolor(simulate_button.default_color);
+                }
+
                 if (event.type == sf::Event::MouseWheelMoved) {
                     if (event.mouseWheel.delta > 0) {
                         //Plus Button clicking
@@ -174,7 +259,7 @@ int main()
             if (event.type = sf::Event::MouseMoved) { //if mouse is moved
                 
                 //if window is being focused on
-                if (is_focused) {
+                if (is_focused && !menu_popup.isVisible) {
 
                     //get position in pixels and translate it to what grid tile is that:
                     sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
@@ -183,19 +268,30 @@ int main()
                     //search for which cell is hovered over
                     if (mouse_pos.x > ui_size && mouse_pos.y > 0 && mouse_pos.x < map_x + ui_size && mouse_pos.y < map_y) {
 
+                        int minimal_x = std::max(searched_x - brush_size + 1, 0);
+                        int maximal_x = std::min(searched_x + brush_size - 1, grid_num - 1);
 
+                        int minimal_y = std::max(searched_y - brush_size + 1, 0);
+                        int maximal_y = std::min(searched_y + brush_size - 1, grid_num - 1);
 
                         //Hovering mouse over cell / grey-out
-                        grid_list[searched_x][searched_y].Recolor(sf::Color(abs(grid_list[searched_x][searched_y].default_color.r - 60), abs(grid_list[searched_x][searched_y].default_color.g - 60), abs(grid_list[searched_x][searched_y].default_color.b - 60)));
+                        for (int dx = minimal_x; dx <= maximal_x; dx++) {
+                            for (int dy = minimal_y; dy <= maximal_y; dy++) {
+                                grid_list[dx][dy].Recolor(
+                                    sf::Color(
+                                        abs(grid_list[dx][dy].default_color.r - 60),
+                                        abs(grid_list[dx][dy].default_color.g - 60), 
+                                        abs(grid_list[dx][dy].default_color.b - 60)
+                                    )
+                                );
+                            }
+                        }
+
+                        
 
 
                         //left click action on cell
                         if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !simulate) {
-                            int minimal_x = std::max(searched_x - brush_size +1, 0);
-                            int maximal_x = std::min(searched_x + brush_size -1, grid_num - 1);
-
-                            int minimal_y = std::max(searched_y - brush_size +1, 0);
-                            int maximal_y = std::min(searched_y + brush_size -1, grid_num - 1);
 
                             for (int x = minimal_x; x <= maximal_x; x++) {
                                 for (int y = minimal_y; y <= maximal_y; y++) {
@@ -230,90 +326,8 @@ int main()
             }
         }
 
-        //setting what color each button on keyboard does - deprecated:
-        /*
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) paint_color = button_list[0].default_color;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::G)) paint_color = button_list[1].default_color;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::B)) paint_color = button_list[2].default_color;
-        */
 
-
-        //recolor back after hovering
-        for (int i = 0; i < grid_num; i++) {
-            for (int j = 0; j < grid_num; j++) {
-                grid_list[i][j].Recolor(grid_list[i][j].default_color);
-            }
-        }
-
-        //Color buttons interactions
-        for (auto& each : button_list) {
-
-            if (each.square.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))) {
-
-                //Hovering mouse over cell:
-                each.Recolor(sf::Color(abs(each.default_color.r - 60), abs(each.default_color.g - 60), abs(each.default_color.b - 60)));
-
-
-                //Left-clicking hovered-over cell = adding smth:
-                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                    each.ChangePaintColor(paint_color, paint_substance);
-                }
-                else each.Recolor(each.default_color);
-
-            }
-        }
-
-        //Save Button cliking
-        save_button.Clicked(window, simulate, image, grid_num, grid_size, grid_list);
-
-        //Load Button clicking
-        load_button.Clicked(window, simulate, image, grid_num, grid_size, grid_list);
-
-        //BRUSH CONTROLS
-        //Plus Button clicking
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            increase_brush_button.Clicked(window, simulate, brush_size, brush_size_label.button_label, grid_num);
-        }
-        else increase_brush_button.Release();
-        //Minus Button clicking
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            decrease_brush_button.Clicked(window, simulate, brush_size, brush_size_label.button_label);
-        }
-        else decrease_brush_button.Release();
-
-
-        //TIME CONTROLS
-        //Plus time Button clicking
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            increase_time_button.Clicked(window, simulate, time_speed, time_speed_label.button_label);
-            sim_tpf = 21 - time_speed;
-        }
-        else increase_time_button.Release();
-        //Minus time Button clicking
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            decrease_time_button.Clicked(window, simulate, time_speed, time_speed_label.button_label);
-            sim_tpf = 21 - time_speed;
-        }
-        else decrease_time_button.Release();
-
-
-        //Start simulation button
-        if (simulate_button.square.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))) {
-            //Hovering mouse over cell:
-            simulate_button.Recolor(sf::Color(abs(simulate_button.default_color.r - 60), abs(simulate_button.default_color.g - 60), abs(simulate_button.default_color.b - 60)));
-
-
-            //Left-clicking hovered-over cell = adding smth:
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                simulate_button.ToggleSimulate(simulate);
-            }
-            else {
-                simulate_button.Release();
-            }
-        }
-        else {
-            simulate_button.Recolor(simulate_button.default_color);
-        }
+        
 
         //simulation loop only on some frames
         if (simulate && (delta == 0)) {
@@ -347,6 +361,10 @@ int main()
         increase_time_button.DrawItself(window);
         decrease_time_button.DrawItself(window);
         
+
+        if (menu_popup.isVisible) {
+            menu_popup.MenuDraw();
+        }
         
         //update screen
         window.display();
