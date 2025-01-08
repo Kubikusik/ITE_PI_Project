@@ -364,6 +364,7 @@ int main()
 
         if (menu_popup.isVisible) {
             menu_popup.MenuDraw();
+            menu_popup.first_time = false;
         }
         
         //update screen
