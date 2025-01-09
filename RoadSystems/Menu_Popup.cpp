@@ -40,6 +40,7 @@ void MenuPopup::MenuBgInit() {
     bgTexture.setRepeated(true);
     background.setTexture(&bgTexture);
 
+    ColorSquareCross.setPosition(5000, 5000);
     ColorSquareCross.setSize(sf::Vector2f(30,30));
     ColorSquareCrossTexture.loadFromFile("Cross.png");
     ColorSquareCross.setTexture(&ColorSquareCrossTexture);
@@ -186,8 +187,9 @@ void MenuPopup::DrawGradient(sf::RenderWindow& window) {
     // Draw the entire gradient as quads
     window.draw(&ColorSquare[0], ColorSquare.size(), sf::Quads);
     window.draw(ColorSquareCross);
+        
     
-    if (ColorSquareCross.getPosition() != sf::Vector2f(0, 0)) {
+    if (ColorSquareCross.getPosition() != sf::Vector2f(5000, 5000)) {
         drawLine(window, sf::Vector2i(ColorPReviewBorder.getPosition().x + ColorPReviewBorder.getSize().x - 5, ColorPReviewBorder.getPosition().y), sf::Vector2i(ColorSquareCross.getPosition().x, ColorSquareCross.getPosition().y), 5, sf::Color::Black);
         drawLine(window, sf::Vector2i(ColorPReviewBorder.getPosition().x + ColorPReviewBorder.getSize().x - 5, ColorPReviewBorder.getPosition().y + ColorPReviewBorder.getSize().y - 5), sf::Vector2i(ColorSquareCross.getPosition().x, ColorSquareCross.getPosition().y + ColorSquareCross.getSize().y - 5), 5, sf::Color::Black);
        
@@ -279,23 +281,23 @@ void MenuPopup::HandleMouseClick(sf::RenderWindow& window) {
             sf::Color selectedColor = HSVtoRGB(hue, saturation, brightness);
 
             // Set the selected color as the background color
-            ColorSquareCross.setPosition(sf::Vector2f(mousePos.x - ColorSquareCross.getSize().x /2, mousePos.y - ColorSquareCross.getSize().y / 2));
+            ColorSquareCross.setPosition(sf::Vector2f(mousePos.x - ColorSquareCross.getSize().x / 2, mousePos.y - ColorSquareCross.getSize().y / 2));
+            if (ColorSquareCross.getPosition().x < topLeft.x) {
+                ColorSquareCross.setPosition(topLeft.x, ColorSquareCross.getPosition().y);
+            }
+            if (ColorSquareCross.getPosition().x > bottomRight.x - ColorSquareCross.getSize().x) {
+                ColorSquareCross.setPosition(bottomRight.x - ColorSquareCross.getSize().x, ColorSquareCross.getPosition().y);
+            }
+            if (ColorSquareCross.getPosition().y < topLeft.y) {
+                ColorSquareCross.setPosition(ColorSquareCross.getPosition().x, topLeft.y);
+            }
+            if (ColorSquareCross.getPosition().y > bottomRight.y - ColorSquareCross.getSize().y) {
+                ColorSquareCross.setPosition(ColorSquareCross.getPosition().x, bottomRight.y - ColorSquareCross.getSize().y);
+            }
            
-
-            
             ChangeBackgroundColor(selectedColor);
         }
     }
-}
-
-sf::Color MenuPopup::GetColorFromGradient(float normalizedX, float normalizedY) {
-    // You can create a gradient logic here to return a color based on the normalizedX and normalizedY values
-    // For now, we return a simple gradient from red to green to blue
-    int red = static_cast<int>(normalizedX * 255);
-    int green = static_cast<int>(normalizedY * 255);
-    int blue = 255 - red;
-
-    return sf::Color(red, green, blue);
 }
 
 

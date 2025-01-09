@@ -24,7 +24,7 @@ void MakeButtons(std::vector<Paint_Button>& color_button_list, std::vector<sf::C
     color_button_list.push_back(sand_button);
     color_list.push_back(sf::Color(246, 215, 176));
     i++;
-    Paint_Button plant_button(0, i * (button_size + margin), button_size, "green_b", "plant", default_font, sf::Color(53, 136, 86), PLANT);
+    Paint_Button plant_button(0, i * (button_size + margin), button_size, "green_b", "Plant", default_font, sf::Color(53, 136, 86), PLANT);
     color_button_list.push_back(plant_button);
     color_list.push_back(sf::Color(53, 136, 86));
     i++;
@@ -60,6 +60,7 @@ int main()
     int delta = 0; //delta time for simulation use
     int brush_size = 1;
     sf::Color bg_color(250, 250, 250);
+    bg_color = sf::Color(246, 215, 176);
     ChangeBackgroundColor(bg_color);
 
     

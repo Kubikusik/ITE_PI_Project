@@ -55,7 +55,6 @@ public:
 	void DrawGradient(sf::RenderWindow& window);
 	sf::Color InterpolateColor(const sf::Color& startColor, const sf::Color& endColor, float normalizedX, float normalizedY);
 	void HandleMouseClick(sf::RenderWindow& window);
-	sf::Color GetColorFromGradient(float normalizedX, float normalizedY);
 };
 
 void drawLine(sf::RenderWindow& window, sf::Vector2i point1, sf::Vector2i point2, int lineWidth, sf::Color lineColor);

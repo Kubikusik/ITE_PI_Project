@@ -28,7 +28,7 @@ const sf::Color POWER_COLOR(255,255,51);
 void ChangeBackgroundColor(sf::Color color) {
     DEAD_COLOR = color;
 }
-
+ 
 sf::Color GetBgColor() {
     return DEAD_COLOR;
 }
