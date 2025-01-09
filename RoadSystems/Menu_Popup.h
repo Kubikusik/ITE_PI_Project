@@ -36,6 +36,12 @@ public:
 	sf::RenderWindow* main_window;
 	sf::Font default_font;
 
+	sf::RectangleShape ColorSquareCross;
+	sf::Texture ColorSquareCrossTexture;
+
+	sf::RectangleShape ColorPreview;
+	sf::RectangleShape ColorPReviewBorder;
+
 	Slider color_slider;
 
 	bool isVisible = false;
@@ -51,5 +57,7 @@ public:
 	void HandleMouseClick(sf::RenderWindow& window);
 	sf::Color GetColorFromGradient(float normalizedX, float normalizedY);
 };
+
+void drawLine(sf::RenderWindow& window, sf::Vector2i point1, sf::Vector2i point2, int lineWidth, sf::Color lineColor);
 #endif
 #pragma once

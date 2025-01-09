@@ -39,6 +39,18 @@ void MenuPopup::MenuBgInit() {
     bgTexture.loadFromFile("Background.png");
     bgTexture.setRepeated(true);
     background.setTexture(&bgTexture);
+
+    ColorSquareCross.setSize(sf::Vector2f(30,30));
+    ColorSquareCrossTexture.loadFromFile("Cross.png");
+    ColorSquareCross.setTexture(&ColorSquareCrossTexture);
+
+    ColorPreview.setPosition(sf::Vector2f(305, 305));
+    ColorPreview.setSize(sf::Vector2f(70,70));
+    ColorPreview.setFillColor(GetBgColor());
+
+    ColorPReviewBorder.setPosition(sf::Vector2f(300, 300));
+    ColorPReviewBorder.setSize(sf::Vector2f(80, 80));
+    ColorPReviewBorder.setFillColor(sf::Color::Black);
 }
 
 void MenuPopup::MenuDraw() {
@@ -98,9 +110,9 @@ void MenuPopup::MenuDraw() {
     decrease_G.DrawItself(*(this->main_window));
     increase_B.DrawItself(*(this->main_window));
     decrease_B.DrawItself(*(this->main_window));*/
-
-    HandleMouseClick(*main_window); // Handle clicks on the gradient and slider
     DrawGradient(*main_window); // Draw the gradient
+    HandleMouseClick(*main_window); // Handle clicks on the gradient and slider
+    
 
     // Adjust the background color based on the slider
     color_slider.DrawItself(*(this->main_window)); // Draw slider last
@@ -173,6 +185,22 @@ void MenuPopup::DrawGradient(sf::RenderWindow& window) {
 
     // Draw the entire gradient as quads
     window.draw(&ColorSquare[0], ColorSquare.size(), sf::Quads);
+    window.draw(ColorSquareCross);
+    
+    if (ColorSquareCross.getPosition() != sf::Vector2f(0, 0)) {
+        drawLine(window, sf::Vector2i(ColorPReviewBorder.getPosition().x + ColorPReviewBorder.getSize().x - 5, ColorPReviewBorder.getPosition().y), sf::Vector2i(ColorSquareCross.getPosition().x, ColorSquareCross.getPosition().y), 5, sf::Color::Black);
+        drawLine(window, sf::Vector2i(ColorPReviewBorder.getPosition().x + ColorPReviewBorder.getSize().x - 5, ColorPReviewBorder.getPosition().y + ColorPReviewBorder.getSize().y - 5), sf::Vector2i(ColorSquareCross.getPosition().x, ColorSquareCross.getPosition().y + ColorSquareCross.getSize().y - 5), 5, sf::Color::Black);
+       
+    }
+    else {
+        drawLine(window, sf::Vector2i(ColorPReviewBorder.getPosition().x + ColorPReviewBorder.getSize().x - 5, ColorPReviewBorder.getPosition().y), sf::Vector2i(topLeft), 5, sf::Color::Black);
+        drawLine(window, sf::Vector2i(ColorPReviewBorder.getPosition().x + ColorPReviewBorder.getSize().x  - 5, ColorPReviewBorder.getPosition().y + ColorPReviewBorder.getSize().y - 5), sf::Vector2i(topLeft.x, 0 ) + sf::Vector2i(0, bottomRight.y - 5), 5, sf::Color::Black);
+
+    }
+
+    window.draw(ColorPReviewBorder);
+    ColorPreview.setFillColor(GetBgColor());
+    window.draw(ColorPreview);
 }
 
 sf::Color MenuPopup::InterpolateColor(const sf::Color& startColor, const sf::Color& endColor, float normalizedX, float normalizedY) {
@@ -200,6 +228,7 @@ void Slider::UpdateHandlePosition(sf::RenderWindow& window) {
     }
     else {
         isDragging = false;  // Stop dragging when the mouse is released
+
     }
 }
 
@@ -231,7 +260,7 @@ void MenuPopup::HandleMouseClick(sf::RenderWindow& window) {
         // Define the bounds of the gradient square
         sf::Vector2f topLeft(500, 200);
         sf::Vector2f bottomRight(755, 455);
-
+  
         // Check if mouse is inside the gradient square
         if (mousePos.x >= topLeft.x && mousePos.x <= bottomRight.x &&
             mousePos.y >= topLeft.y && mousePos.y <= bottomRight.y) {
@@ -250,6 +279,10 @@ void MenuPopup::HandleMouseClick(sf::RenderWindow& window) {
             sf::Color selectedColor = HSVtoRGB(hue, saturation, brightness);
 
             // Set the selected color as the background color
+            ColorSquareCross.setPosition(sf::Vector2f(mousePos.x - ColorSquareCross.getSize().x /2, mousePos.y - ColorSquareCross.getSize().y / 2));
+           
+
+            
             ChangeBackgroundColor(selectedColor);
         }
     }
@@ -263,4 +296,51 @@ sf::Color MenuPopup::GetColorFromGradient(float normalizedX, float normalizedY) 
     int blue = 255 - red;
 
     return sf::Color(red, green, blue);
+}
+
+
+void drawLine(sf::RenderWindow& window, sf::Vector2i point1, sf::Vector2i point2, int lineWidth, sf::Color lineColor) {
+    int x0 = point1.x;
+    int y0 = point1.y;
+    int x1 = point2.x;
+    int y1 = point2.y;
+    int dx = abs(x1 - x0);
+    int sx, sy;
+    if (x0 < x1) {
+        sx = 1;
+    }
+    else {
+        sx = -1;
+    }
+
+    int dy = -abs(y1 - y0);
+    if (y0 < y1) {
+        sy = 1;
+    }
+    else {
+        sy = -1;
+    }
+
+    int err = dx + dy;
+
+    while (true) {
+        sf::RectangleShape rect(sf::Vector2f(lineWidth, lineWidth));
+        rect.setFillColor(lineColor);
+        rect.setPosition(x0, y0);
+        window.draw(rect);
+        if (x0 == x1 && y0 == y1) {
+            break;
+        }
+        int e2 = 2 * err;
+
+        if (e2 >= dy) {
+            err += dy;
+            x0 += sx;
+        }
+
+        if (e2 <= dx) {
+            err += dx;
+            y0 += sy;
+        }
+    }
 }
