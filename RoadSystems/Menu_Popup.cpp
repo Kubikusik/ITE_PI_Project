@@ -12,8 +12,9 @@ Slider::Slider(sf::Vector2f position, sf::Vector2f size) {
 
     // Initialize the handle (the draggable part)
     Handle_Shape.setSize(sf::Vector2f(size.x, 20));  // Handle width matches the slider width
-    Handle_Shape.setFillColor(sf::Color::Black);  // Cyan handle
+    //Handle_Shape.setFillColor(sf::Color::Black);  // Black handle
     Handle_Shape.setPosition(position.x, position.y);  // Position at the top
+
 }
 
 MenuPopup::MenuPopup(sf::RenderWindow* window, sf::Font default_font) {
@@ -23,6 +24,13 @@ MenuPopup::MenuPopup(sf::RenderWindow* window, sf::Font default_font) {
 
     // Initialize color_slider directly
     this->color_slider = Slider(sf::Vector2f(800, 200), sf::Vector2f(50, 255));  // Direct initialization
+    if (!color_slider.HandleTexture.loadFromFile("ColorSliderHandle.png")) {
+        std::cerr << "Error: Could not load the texture\n";
+    }
+    else {
+        std::cout << "Texture loaded successfully\n";
+    }
+    color_slider.Handle_Shape.setTexture(&color_slider.HandleTexture);
 }
 
 void MenuPopup::MenuBgInit() {
@@ -74,7 +82,7 @@ void MenuPopup::MenuDraw() {
     sf::Text color_display;
     color_display.setFont(default_font);
     color_display.setCharacterSize(20);
-    color_display.setPosition(550, 250);
+    color_display.setPosition(260, 225);
     color_display.setFillColor(sf::Color::Black);
 
     //if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
@@ -119,35 +127,33 @@ void MenuPopup::MenuDraw() {
     color_slider.DrawItself(*(this->main_window)); // Draw slider last
     this->main_window->draw(color_display);
 }
-sf::Color HSVtoRGB(float H, float S, float V) {
-    float C = S * V; // Chroma
-    float HPrime = std::fmod(H / 60, 6.f); // H'
-    float X = C * (1 - std::fabs(std::fmod(HPrime, 2.f) - 1));
-    float M = V - C;
 
-    float R = 0.f;
-    float G = 0.f;
-    float B = 0.f;
 
-    switch (static_cast<int>(HPrime)) {
-    case 0: R = C; G = X;        break; // [0, 1)
-    case 1: R = X; G = C;        break; // [1, 2)
-    case 2:        G = C; B = X; break; // [2, 3)
-    case 3:        G = X; B = C; break; // [3, 4)
-    case 4: R = X;        B = C; break; // [4, 5)
-    case 5: R = C;        B = X; break; // [5, 6)
+sf::Color HSVtoRGB(float h, float s, float v) {
+    s /= 100.0f; // Convert saturation to range [0, 1]
+    v /= 100.0f; // Convert value to range [0, 1]
+
+    float c = v * s; // Chroma
+    float x = c * (1 - std::fabs(fmod(h / 60.0f, 2) - 1));
+    float m = v - c;
+
+    float r = 0, g = 0, b = 0;
+    if (h >= 0 && h < 60) {
+        r = c; g = x; b = 0;
+    } else if (h >= 60 && h < 120) {
+        r = x; g = c; b = 0;
+    } else if (h >= 120 && h < 180) {
+        r = 0; g = c; b = x;
+    } else if (h >= 180 && h < 240) {
+        r = 0; g = x; b = c;
+    } else if (h >= 240 && h < 300) {
+        r = x; g = 0; b = c;
+    } else if (h >= 300 && h < 360) {
+        r = c; g = 0; b = x;
     }
 
-    R += M;
-    G += M;
-    B += M;
-
-    sf::Color color;
-    color.r = static_cast<sf::Uint8>(std::round(R * 255));
-    color.g = static_cast<sf::Uint8>(std::round(G * 255));
-    color.b = static_cast<sf::Uint8>(std::round(B * 255));
-
-    return color;
+    // Convert to [0, 255] and return sf::Color
+    return sf::Color((r + m) * 255, (g + m) * 255, (b + m) * 255);
 }
 
 void MenuPopup::DrawGradient(sf::RenderWindow& window) {
@@ -162,42 +168,38 @@ void MenuPopup::DrawGradient(sf::RenderWindow& window) {
     float width = bottomRight.x - topLeft.x;
     float height = bottomRight.y - topLeft.y;
 
-    // Create a vector to store the gradient vertices
-    std::vector<sf::Vertex> ColorSquare;
+    // Create a vertex array for the gradient
+    sf::VertexArray gradient(sf::Points, width * height);
 
-    // Loop through each column (one per pixel along the X axis)
-    for (int i = 0; i < width - 1; ++i) {
-        // Vary hue from 0 to 360 across the X axis (gradual transition of the entire gradient)
-        // For now, we are using the hue selected by the slider.
-        float saturation = (i * 1.0f / width);  // Varying saturation from left (0) to right (1)
-        for (int j = 0; j < height - 1; ++j) {
-            float brightness = 1.0f - (j * 1.0f / height);  // Varying brightness from top (1) to bottom (0)
+    // Loop through each pixel
+    for (int x = 0; x < width; ++x) {
+        float saturation = x / width; // Vary saturation from left (0) to right (1)
 
-            // Convert the color from HSV to RGB using the varying hue, saturation, and brightness
-            sf::Color color = HSVtoRGB(hue, saturation, brightness);
+        for (int y = 0; y < height; ++y) {
+            float brightness = 1.0f - (y / height); // Vary brightness from top (1) to bottom (0)
 
-            // Define the 4 vertices for each vertical strip (one for each side of the rectangle)
-            ColorSquare.push_back(sf::Vertex(sf::Vector2f(topLeft.x + i, topLeft.y + j), color)); // Top-left
-            ColorSquare.push_back(sf::Vertex(sf::Vector2f(topLeft.x + i, topLeft.y + j + 1), color)); // Bottom-left
-            ColorSquare.push_back(sf::Vertex(sf::Vector2f(topLeft.x + i + 1, topLeft.y + j + 1), color)); // Bottom-right
-            ColorSquare.push_back(sf::Vertex(sf::Vector2f(topLeft.x + i + 1, topLeft.y + j), color)); // Top-right
+            // Convert HSV to RGB
+            sf::Color color = HSVtoRGB(hue, saturation * 100, brightness * 100);
+
+            // Add the vertex with the color
+            gradient[x + y * width].position = sf::Vector2f(topLeft.x + x, topLeft.y + y);
+            gradient[x + y * width].color = color;
         }
     }
 
-    // Draw the entire gradient as quads
-    window.draw(&ColorSquare[0], ColorSquare.size(), sf::Quads);
+    // Draw the gradient
+    window.draw(gradient);
+
+    // Handle drawing cross, lines, and borders (unchanged)
     window.draw(ColorSquareCross);
-        
-    
+
     if (ColorSquareCross.getPosition() != sf::Vector2f(5000, 5000)) {
         drawLine(window, sf::Vector2i(ColorPReviewBorder.getPosition().x + ColorPReviewBorder.getSize().x - 5, ColorPReviewBorder.getPosition().y), sf::Vector2i(ColorSquareCross.getPosition().x, ColorSquareCross.getPosition().y), 5, sf::Color::Black);
         drawLine(window, sf::Vector2i(ColorPReviewBorder.getPosition().x + ColorPReviewBorder.getSize().x - 5, ColorPReviewBorder.getPosition().y + ColorPReviewBorder.getSize().y - 5), sf::Vector2i(ColorSquareCross.getPosition().x, ColorSquareCross.getPosition().y + ColorSquareCross.getSize().y - 5), 5, sf::Color::Black);
-       
     }
     else {
         drawLine(window, sf::Vector2i(ColorPReviewBorder.getPosition().x + ColorPReviewBorder.getSize().x - 5, ColorPReviewBorder.getPosition().y), sf::Vector2i(topLeft), 5, sf::Color::Black);
-        drawLine(window, sf::Vector2i(ColorPReviewBorder.getPosition().x + ColorPReviewBorder.getSize().x  - 5, ColorPReviewBorder.getPosition().y + ColorPReviewBorder.getSize().y - 5), sf::Vector2i(topLeft.x, 0 ) + sf::Vector2i(0, bottomRight.y - 5), 5, sf::Color::Black);
-
+        drawLine(window, sf::Vector2i(ColorPReviewBorder.getPosition().x + ColorPReviewBorder.getSize().x - 5, ColorPReviewBorder.getPosition().y + ColorPReviewBorder.getSize().y - 5), sf::Vector2i(topLeft.x, 0) + sf::Vector2i(0, bottomRight.y - 5), 5, sf::Color::Black);
     }
 
     window.draw(ColorPReviewBorder);
@@ -239,6 +241,49 @@ void Slider::DrawItself(sf::RenderWindow& window) {
 
     // Draw the slider background and the handle
     window.draw(Slider_Shape);
+
+    float pos_x = Slider_Shape.getPosition().x;
+    float pos_y = Slider_Shape.getPosition().y;
+    float segment_height = Slider_Shape.getSize().y / 360;
+
+    // Use `previous_bottom` to ensure continuity between segments
+    float previous_bottom = pos_y;
+
+    for (int i = 0; i < 360; i++) {
+        sf::VertexArray quad(sf::Quads, 4);
+
+        // Top of the current segment
+        float current_top = previous_bottom;
+
+        // Bottom of the current segment
+        float current_bottom = pos_y + (i + 1) * segment_height;
+
+        sf::Color color = HSVtoRGB(i, 100, 100);
+        sf::Color next_color = HSVtoRGB((i + 1) % 360, 100, 100);
+
+        // Top-left
+        quad[0].position = sf::Vector2f(pos_x, current_top);
+        quad[0].color = color;
+
+        // Top-right
+        quad[1].position = sf::Vector2f(pos_x + Slider_Shape.getSize().x, current_top);
+        quad[1].color = color;
+
+        // Bottom-right
+        quad[2].position = sf::Vector2f(pos_x + Slider_Shape.getSize().x, current_bottom);
+        quad[2].color = next_color;
+
+        // Bottom-left
+        quad[3].position = sf::Vector2f(pos_x, current_bottom);
+        quad[3].color = next_color;
+
+        // Update `previous_bottom` for the next segment
+        previous_bottom = current_bottom;
+
+        // Draw the quad
+        window.draw(quad);
+    }
+
     window.draw(Handle_Shape);
 }
 
@@ -262,22 +307,23 @@ void MenuPopup::HandleMouseClick(sf::RenderWindow& window) {
         // Define the bounds of the gradient square
         sf::Vector2f topLeft(500, 200);
         sf::Vector2f bottomRight(755, 455);
-  
+
         // Check if mouse is inside the gradient square
         if (mousePos.x >= topLeft.x && mousePos.x <= bottomRight.x &&
             mousePos.y >= topLeft.y && mousePos.y <= bottomRight.y) {
 
             // Normalize the mouse position within the square
-            float normalizedX = (mousePos.x - topLeft.x) / (bottomRight.x - topLeft.x);
-            float normalizedY = (mousePos.y - topLeft.y) / (bottomRight.y - topLeft.y);
+            float normalizedX = (mousePos.x - topLeft.x) / (bottomRight.x - topLeft.x); // [0, 1]
+            float normalizedY = (mousePos.y - topLeft.y) / (bottomRight.y - topLeft.y); // [0, 1]
 
-            // Interpolate the color based on the normalized mouse position
-            // Now we calculate the color based on selected hue, saturation and brightness
-            float hue = color_slider.GetValue(); // Get the current hue from the slider
-            float saturation = normalizedX;      // Vary saturation based on X position
-            float brightness = 1.0f - normalizedY; // Vary brightness based on Y position
+            // Vary saturation based on X position and brightness based on Y position
+            float saturation = normalizedX * 100;      // Convert to range [0, 100]
+            float brightness = (1.0f - normalizedY) * 100; // Convert to range [0, 100]
 
-            // Get the final color based on hue, saturation, and brightness
+            // Get the current hue from the slider
+            float hue = color_slider.GetValue();
+
+            // Convert HSV to RGB
             sf::Color selectedColor = HSVtoRGB(hue, saturation, brightness);
 
             // Set the selected color as the background color
@@ -294,11 +340,12 @@ void MenuPopup::HandleMouseClick(sf::RenderWindow& window) {
             if (ColorSquareCross.getPosition().y > bottomRight.y - ColorSquareCross.getSize().y) {
                 ColorSquareCross.setPosition(ColorSquareCross.getPosition().x, bottomRight.y - ColorSquareCross.getSize().y);
             }
-           
+
             ChangeBackgroundColor(selectedColor);
         }
     }
 }
+
 
 
 void drawLine(sf::RenderWindow& window, sf::Vector2i point1, sf::Vector2i point2, int lineWidth, sf::Color lineColor) {

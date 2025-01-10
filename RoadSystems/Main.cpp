@@ -60,7 +60,7 @@ int main()
     int delta = 0; //delta time for simulation use
     int brush_size = 1;
     sf::Color bg_color(250, 250, 250);
-    bg_color = sf::Color(246, 215, 176);
+    //bg_color = sf::Color(246, 215, 176);
     ChangeBackgroundColor(bg_color);
 
     
@@ -152,7 +152,7 @@ int main()
             }
 
             //Menu under space button:
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space && is_focused && !simulate && isNewFrame) {
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M && is_focused && !simulate && isNewFrame) {
                 //menu_popup.ToggleMenuPopup(window, default_font);
                 //is_focused = false; // Main window loses focus
                 UpdateGridBackground(grid_list, grid_num, GetBgColor());
@@ -184,12 +184,15 @@ int main()
                         each.Recolor(sf::Color(abs(each.default_color.r - 60), abs(each.default_color.g - 60), abs(each.default_color.b - 60)));
 
 
-                        //Left-clicking hovered-over cell = adding smth:
+                        //Left-clicking - selecting:
                         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                             each.ChangePaintColor(paint_color, paint_substance);
                         }
-                        else each.Recolor(each.default_color);
 
+                    }
+
+                    if (!sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                        each.Recolor(each.default_color);
                     }
                 }
 
@@ -230,7 +233,7 @@ int main()
                     simulate_button.Recolor(sf::Color(abs(simulate_button.default_color.r - 60), abs(simulate_button.default_color.g - 60), abs(simulate_button.default_color.b - 60)));
 
 
-                    //Left-clicking hovered-over cell = adding smth:
+                    //Left-clicking - selecting:
                     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                         simulate_button.ToggleSimulate(simulate);
                     }

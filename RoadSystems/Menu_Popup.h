@@ -15,12 +15,13 @@ public:
 	sf::RectangleShape Handle_Shape;  // The draggable part (handle)
 	bool isDragging = false;  // Track if the slider is being dragged
 	sf::Color SelectedColor = sf::Color::Red;
+	sf::Texture HandleTexture;
 
 	// Default constructor
 	Slider() {
 		Slider_Shape.setSize(sf::Vector2f(100, 300));  // Set a visible default size
 		Handle_Shape.setSize(sf::Vector2f(100, 20));   // Handle size
-		Handle_Shape.setFillColor(sf::Color::Cyan);     // Default handle color
+		Handle_Shape.setFillColor(sf::Color::Black);     // Default handle color
 	}
 
 	Slider(sf::Vector2f position, sf::Vector2f size);  // Constructor to initialize the slider
