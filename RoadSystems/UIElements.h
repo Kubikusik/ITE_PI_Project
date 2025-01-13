@@ -4,9 +4,32 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-//definitions:
-#define WHITE sf::Color(255,255,255)
+//ui consts
+extern const int grid_size;
+extern const int button_size;
+extern const int ui_size;
+extern const int grid_num;
+extern const int map_x;
+extern const int map_y;
+extern const int margin;
 
+
+
+//Colors:
+extern sf::Color DEAD_COLOR;
+extern const sf::Color SAND_COLOR;
+extern const sf::Color PLANT_COLOR;
+extern const sf::Color WATER_COLOR;
+extern const sf::Color FIRE_COLOR;
+extern const sf::Color STEEL_COLOR;
+extern const sf::Color STEAM_COLOR;
+extern const sf::Color CONWAY_COLOR;
+extern const sf::Color CABLE_COLOR;
+extern const sf::Color POWER_COLOR;
+
+//constants:
+extern sf::String image_format;
+extern int font_size;
 
 enum Substances {
 	DEAD,
@@ -26,7 +49,7 @@ void ChangeBackgroundColor(sf::Color color);
 sf::Color GetBgColor();
 
 
-#pragma once
+
 class Grid_Tiles {
 public:
 	Substances substance = DEAD;
@@ -46,7 +69,6 @@ public:
 	void UpdateSubstanceColor();
 };
 
-void UpdateGridBackground(Grid_Tiles**& grid_list, int grid_num, sf::Color new_bg_color);
 
 
 class UI_Element {
@@ -161,4 +183,9 @@ public:
 	void Release();
 };
 
+
+//Other Functions:
+void UpdateGridBackground(Grid_Tiles**& grid_list, int grid_num, sf::Color new_bg_color);
+
 #endif
+#pragma once

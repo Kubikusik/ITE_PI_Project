@@ -4,15 +4,18 @@
 #include "FileManager.h"
 #include "tinyxml2.h"
 
-//constants:
-#define WHITE sf::Color(255,255,255)
+//ui consts
+const int grid_size = 19;
+const int button_size = 50;
+const int ui_size = 300;
+const int grid_num = 42;
+const int map_x = grid_num * (grid_size + 1);
+const int map_y = grid_num * (grid_size + 1);
 const int margin = 20;
-sf::String image_format = ".png";
-int font_size = 30;
 
 
-//constants:
-//const sf::Color ALIVE_COLOR(255, 0, 0);
+
+//Colors:
 sf::Color DEAD_COLOR(255, 255, 255);
 const sf::Color SAND_COLOR(246, 215, 176);
 const sf::Color PLANT_COLOR(53, 136, 86);
@@ -22,16 +25,25 @@ const sf::Color STEEL_COLOR(111, 106, 96);
 const sf::Color STEAM_COLOR(90, 90, 96);
 const sf::Color CONWAY_COLOR(5, 15, 45);
 const sf::Color CABLE_COLOR(45, 15, 45);
-const sf::Color POWER_COLOR(255,255,51);
+const sf::Color POWER_COLOR(255, 255, 51);
 
+//constants:
+#define WHITE sf::Color(255,255,255)
+sf::String image_format = ".png";
+int font_size = 30;
 
+//Change Background Color Function:
 void ChangeBackgroundColor(sf::Color color) {
     DEAD_COLOR = color;
 }
  
+
+//Get Background Color Function:
 sf::Color GetBgColor() {
     return DEAD_COLOR;
 }
+
+
 
 //all elements have their functions below
 

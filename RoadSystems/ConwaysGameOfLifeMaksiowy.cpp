@@ -1,7 +1,6 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "ConwaysGameOfLife.h"
-#include "UIElements.h"
 #include <time.h>
 #include <cstdlib>
 #include <algorithm>
@@ -13,18 +12,7 @@ const int gravity_const = -1;
 const int water_spread_const = 1;
 const int max_velocity = 10;
 
-const sf::Color ALIVE_COLOR(255, 0, 0);
-const sf::Color DEAD_COLOR(255, 255, 255);
-const sf::Color SAND_COLOR(246, 215, 176);
-const sf::Color PLANT_COLOR(53, 136, 86);
-const sf::Color WATER_COLOR(142, 194, 228);
-const sf::Color FIRE_COLOR(229, 81, 0);
 
-//need for counting neighbors by color:
-struct ColorMap {
-    sf::Color color;
-    int count;
-};
 
 //test idea of different rules than normal conway's game of life (chance based instead of deterministic) - DEPRECATED
 /*

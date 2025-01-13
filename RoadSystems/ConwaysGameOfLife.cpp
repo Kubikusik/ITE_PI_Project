@@ -3,12 +3,6 @@
 #include "ConwaysGameOfLife.h"
 #include "UIElements.h"
 
-
-//constants:
-const sf::Color ALIVE_COLOR(255, 0, 0);
-const sf::Color DEAD_COLOR(255, 255, 255);
-
-
 //this function counts neighbors of desired color around the cell (also prevents checking out of bounds)
 int CountNeighbors(int start_x, int start_y, int end_x, int end_y, int x, int y, Grid_Tiles**& grid_list, int grid_num, sf::Color searched_color) {
     int neigbor_counter = 0;

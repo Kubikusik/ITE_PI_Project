@@ -1,6 +1,4 @@
 #include <iostream>
-#include <SFML/Graphics.hpp>
-#include "UIElements.h"
 #include "Menu_Popup.h"
 #include <vector>
 
@@ -17,7 +15,7 @@ Slider::Slider(sf::Vector2f position, sf::Vector2f size) {
 
 }
 
-MenuPopup::MenuPopup(sf::RenderWindow* window, sf::Font default_font) {
+MenuPopup::MenuPopup(sf::RenderWindow* window, sf::Font& default_font) {
     this->main_window = window;
     this->default_font = default_font;
     MenuBgInit();

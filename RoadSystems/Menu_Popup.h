@@ -1,8 +1,5 @@
 #ifndef MENU_POPUP_H
 #define MENU_POPUP_H
-
-#include <iostream>
-#include <SFML/Graphics.hpp>
 #include "UIElements.h"
 
 
@@ -50,7 +47,7 @@ public:
 
 	std::vector<Labeled_Button> Menu_Buttons;
 
-	MenuPopup(sf::RenderWindow* window, sf::Font default_font);
+	MenuPopup(sf::RenderWindow* window, sf::Font& default_font);
 	void MenuBgInit();
 	void MenuDraw();
 	void DrawGradient(sf::RenderWindow& window);
