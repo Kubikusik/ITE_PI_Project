@@ -136,6 +136,7 @@
     <ClCompile Include="ConwaysGameOfLife.cpp" />
     <ClCompile Include="ConwaysGameOfLifeMaksiowy.cpp" />
     <ClCompile Include="EventHandler.cpp" />
+    <ClCompile Include="Load_Popup.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="Menu_Popup.cpp" />
@@ -148,6 +149,7 @@
     <ClInclude Include="ConwaysGameOfLifeMaksiowy.h" />
     <ClInclude Include="EventHandler.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="Load_Popup.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="UIElements.h" />

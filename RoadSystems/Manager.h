@@ -65,6 +65,7 @@ public:
     sf::Image image;
     Grid_Tiles** grid_list = nullptr; // Pointer to grid tiles
     MenuPopup *menu_popup;
+    //LoadMenu *load_menu;
 
     //Side background
     std::unique_ptr<UIButtonSet> ui_buttons;

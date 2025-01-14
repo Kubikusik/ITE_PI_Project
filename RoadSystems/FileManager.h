@@ -1,6 +1,6 @@
 #pragma once
 
-#include <windows.h>
+//#include <windows.h>
 #include <shobjidl.h> //for IFIleOpenDialog and IFileSaveDialog
 #include <string>
 

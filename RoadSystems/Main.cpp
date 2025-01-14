@@ -1,5 +1,3 @@
-#include <iostream>
-#include "Menu_Popup.h"
 #include "Manager.h"
 #include "EventHandler.h"
 

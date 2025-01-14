@@ -43,7 +43,7 @@ void MenuPopup::MenuBgInit() {
 
     background.setFillColor(sf::Color(200, 200, 200));
     bgTexture.loadFromFile("./Textures/MenuPopup/Background.png");
-    bgTexture.setRepeated(true);
+    //bgTexture.setRepeated(true);
     background.setTexture(&bgTexture);
 
     ColorSquareCross.setPosition(5000, 5000);

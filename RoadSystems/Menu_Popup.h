@@ -45,7 +45,7 @@ public:
 	bool isVisible = false;
 	bool first_time = true;
 
-	std::vector<Labeled_Button> Menu_Buttons;
+	//std::vector<Labeled_Button> Menu_Buttons;
 
 	MenuPopup(sf::RenderWindow* window, sf::Font& default_font);
 	void MenuBgInit();

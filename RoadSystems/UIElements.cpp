@@ -190,12 +190,12 @@ void Save_Button::Clicked(sf::RenderWindow& window, bool simulate, sf::Image& im
 				tinyxml2::XMLElement* bg = doc.NewElement("bg"); //new bg element
 				bg->SetAttribute("r", DEAD_COLOR.r);
 				bg->SetAttribute("g", DEAD_COLOR.g);
-				bg->SetAttribute("b", DEAD_COLOR.b);
-				doc.InsertEndChild(bg); //inserting bg element to xml
+                bg->SetAttribute("b", DEAD_COLOR.b);
+                doc.InsertFirstChild(bg);
                 for (int i = 0; i < grid_num; i++) {
                     for (int j = 0; j < grid_num; j++) {
                         if (grid_list[i][j].substance != DEAD) {
-							tinyxml2::XMLElement* cell = doc.NewElement("cell"); //new cell element
+                            tinyxml2::XMLElement* cell = doc.NewElement("cell");
 							//inserting cell attributes
                             cell->SetAttribute("x", i);
                             cell->SetAttribute("y", j);
@@ -203,11 +203,12 @@ void Save_Button::Clicked(sf::RenderWindow& window, bool simulate, sf::Image& im
                             cell->SetAttribute("g", grid_list[i][j].default_color.g);
                             cell->SetAttribute("b", grid_list[i][j].default_color.b);
 							cell->SetAttribute("s", grid_list[i][j].substance);
-							//writing cell to xml
-							doc.InsertEndChild(cell);
+							//writing cell to bg
+                            bg->InsertEndChild(cell);
                         }
                     }
                 }
+                doc.InsertEndChild(bg);
 				//save xml to file
 				doc.SaveFile(saveLocation.c_str());
 			}
@@ -248,22 +249,26 @@ void Load_Button::Clicked(sf::RenderWindow& window, bool simulate, sf::Image& im
 
                 tinyxml2::XMLDocument doc; //initialize new XML DOM
                 doc.LoadFile(file.c_str()); //loads file
+
+				//todo: check if file is valid
+
+
+
 				tinyxml2::XMLElement* root = doc.FirstChildElement("bg"); //gets bg element
 				ChangeBackgroundColor(sf::Color(root->IntAttribute("r"), root->IntAttribute("g"), root->IntAttribute("b"))); //sets bg color
 				UpdateGridBackground(grid_list, grid_num, DEAD_COLOR); //updates grid background color
-                tinyxml2::XMLElement* cell = doc.FirstChildElement("cell"); //gets first cell element
+                tinyxml2::XMLElement* cell = root->FirstChildElement("cell"); //gets first cell element
                 while (cell != NULL) { //while there are cells read and set their attributes
                     int x = cell->IntAttribute("x");
                     int y = cell->IntAttribute("y");
                     int r = cell->IntAttribute("r");
                     int g = cell->IntAttribute("g");
                     int b = cell->IntAttribute("b");
-					Substances s = (Substances)cell->IntAttribute("s");
+                    Substances s = (Substances)cell->IntAttribute("s");
                     grid_list[x][y].default_color = sf::Color(r, g, b);
-					grid_list[x][y].substance = s;
+                    grid_list[x][y].substance = s;
                     cell = cell->NextSiblingElement("cell"); //go to next cell
                 }
-                
             }
         }
         else Recolor(default_color);
