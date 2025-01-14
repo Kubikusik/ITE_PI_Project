@@ -22,7 +22,7 @@ MenuPopup::MenuPopup(sf::RenderWindow* window, sf::Font& default_font) {
 
     // Initialize color_slider directly
     this->color_slider = Slider(sf::Vector2f(800, 200), sf::Vector2f(50, 255));  // Direct initialization
-    if (!color_slider.HandleTexture.loadFromFile("ColorSliderHandle.png")) {
+    if (!color_slider.HandleTexture.loadFromFile("./Textures/MenuPopup/ColorSliderHandle.png")) {
         std::cerr << "Error: Could not load the texture\n";
     }
     else {
@@ -42,13 +42,13 @@ void MenuPopup::MenuBgInit() {
     ));
 
     background.setFillColor(sf::Color(200, 200, 200));
-    bgTexture.loadFromFile("Background.png");
+    bgTexture.loadFromFile("./Textures/MenuPopup/Background.png");
     bgTexture.setRepeated(true);
     background.setTexture(&bgTexture);
 
     ColorSquareCross.setPosition(5000, 5000);
     ColorSquareCross.setSize(sf::Vector2f(30,30));
-    ColorSquareCrossTexture.loadFromFile("Cross.png");
+    ColorSquareCrossTexture.loadFromFile("./Textures/MenuPopup/Cross.png");
     ColorSquareCross.setTexture(&ColorSquareCrossTexture);
 
     ColorPreview.setPosition(sf::Vector2f(305, 305));

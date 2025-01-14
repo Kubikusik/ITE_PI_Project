@@ -73,6 +73,7 @@ void Event_Handler::Loop() {
         //update screen
         window.clear();
         RenderAll();
+        
         window.display();
 
         //add +1 to time and if it reaches desired tpf reset it to 0 (simulation frame)
@@ -83,7 +84,11 @@ void Event_Handler::Loop() {
 
 
 void Event_Handler::RenderAll() {
+
     sf::RenderWindow& window = manager->window;
+
+    window.draw(manager->SideUI);
+
     //Draw Grid
     for (int i = 0; i < grid_num; i++) {
         for (int j = 0; j < grid_num; j++) {
@@ -151,8 +156,9 @@ void Event_Handler::GridTilesInteraction(sf::Event &event) {
 
                     for (int x = minimal_x; x <= maximal_x; x++) {
                         for (int y = minimal_y; y <= maximal_y; y++) {
-                            manager->grid_list[x][y].default_color = manager->paint_color;
-                            manager->grid_list[x][y].substance = manager->paint_substance;
+                            
+                            manager->grid_list[x][y].next_substance = manager->paint_substance;
+                            manager->grid_list[x][y].UpdateSubstanceColor();
                         }
                     }
                 }

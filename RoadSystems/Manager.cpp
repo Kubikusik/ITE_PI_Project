@@ -13,6 +13,7 @@ Manager::Manager() {
     menu_popup = new MenuPopup(&window, default_font);
     CreateGrid();
     CreateButtons(button_list, color_list);  // Dereference here to pass to the function
+    
 }
 
 Manager::~Manager() {
@@ -39,11 +40,24 @@ void Manager::CreateGrid() {
 //Function for making all the color buttons (all substances)
 void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::vector<sf::Color>& color_list){
     int i = 0;
+    sf::Texture temp_texture;
+    sf::Color WHITE(255, 255, 255);
+
+    SideUI.setPosition(sf::Vector2f(0, 0));
+    SideUI.setScale(sf::Vector2f(150, 420));
+    if (!SideTexture.loadFromFile("./Textures/SideBg/SideBg.png")) std::cout << "Error loading side menu";
+    else std::cout << "Loaded Side Correctly";
+    SideUI.setFillColor(sf::Color(255, 255, 255));
+    SideUI.setTexture(&SideTexture);
+    
 
     // Sand Button
+    if (!temp_texture.loadFromFile("./Textures/UIButtons/SubstanceButtons/SubstanceTemp.png")) std::cout << "ERROR OF TEXTURE";
+    else std::cout << "CORRECTO MUNDO";
+
     ui_buttons->sand_button = std::make_unique<Paint_Button>(
         0, i * (button_size + margin), button_size, "yellow_b", "Sand", default_font,
-        sf::Color(246, 215, 176), SAND
+        WHITE, SAND, temp_texture
     );
     color_button_list.push_back(*ui_buttons->sand_button);
     color_list.push_back(sf::Color(246, 215, 176));
@@ -52,7 +66,7 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     // Plant Button
     ui_buttons->plant_button = std::make_unique<Paint_Button>(
         0, i * (button_size + margin), button_size, "green_b", "Plant", default_font,
-        sf::Color(53, 136, 86), PLANT
+        WHITE, PLANT, temp_texture
     );
     color_button_list.push_back(*ui_buttons->plant_button);
     color_list.push_back(sf::Color(53, 136, 86));
@@ -61,7 +75,7 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     // Water Button
     ui_buttons->water_button = std::make_unique<Paint_Button>(
         0, i * (button_size + margin), button_size, "water_b", "Water", default_font,
-        sf::Color(142, 194, 228), WATER
+        WHITE, WATER, temp_texture
     );
     color_button_list.push_back(*ui_buttons->water_button);
     color_list.push_back(sf::Color(142, 194, 228));
@@ -70,7 +84,7 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     // Fire Button
     ui_buttons->fire_button = std::make_unique<Paint_Button>(
         0, i * (button_size + margin), button_size, "red_b", "Fire", default_font,
-        sf::Color(229, 81, 0), FIRE
+        WHITE, FIRE, temp_texture
     );
     color_button_list.push_back(*ui_buttons->fire_button);
     color_list.push_back(sf::Color(229, 81, 0));
@@ -79,7 +93,7 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     // Steel Button
     ui_buttons->steel_button = std::make_unique<Paint_Button>(
         0, i * (button_size + margin), button_size, "steel_b", "Steel", default_font,
-        sf::Color(111, 106, 96), STEEL
+        WHITE, STEEL, temp_texture
     );
     color_button_list.push_back(*ui_buttons->steel_button);
     color_list.push_back(sf::Color(111, 106, 96));
@@ -88,7 +102,7 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     // Conway Button
     ui_buttons->conway_button = std::make_unique<Paint_Button>(
         0, i * (button_size + margin), button_size, "conway_b", "Nanomachine", default_font,
-        sf::Color(5, 15, 45), CONWAY
+        WHITE, CONWAY, temp_texture
     );
     color_button_list.push_back(*ui_buttons->conway_button);
     color_list.push_back(sf::Color(5, 15, 45));
@@ -97,7 +111,7 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     // Cable Button
     ui_buttons->cable_button = std::make_unique<Paint_Button>(
         0, i * (button_size + margin), button_size, "cable_b", "Cable", default_font,
-        sf::Color(45, 15, 45), CABLE
+        WHITE, CABLE, temp_texture
     );
     color_button_list.push_back(*ui_buttons->cable_button);
     color_list.push_back(sf::Color(45, 15, 45));
@@ -106,50 +120,56 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     // Save Button
     ui_buttons->save_button = std::make_unique<Save_Button>(
         0, i * (button_size + margin), button_size, "save_b", "Save", default_font,
-        sf::Color(50, 50, 50)
+        WHITE, temp_texture
     );
     i++;
 
     // Load Button
     ui_buttons->load_button = std::make_unique<Load_Button>(
         0, i * (button_size + margin), button_size, "load_b", "Load", default_font,
-        sf::Color(50, 50, 50)
+        WHITE, temp_texture
     );
     i++;
+
+    if (!temp_texture.loadFromFile("./Textures/UIButtons/SimButton/SimButtonOff.png")) std::cout << "ERROR OF TEXTURE";
+    else std::cout << "CORRECTO MUNDO";
 
     // Simulate Button
     ui_buttons->simulate_button = std::make_unique<Simulate_Button>(
         0, i * (button_size + margin), button_size, "sim_b", "Run", default_font,
-        sf::Color(255, 0, 0)
+        WHITE, temp_texture
     );
+    if (!temp_texture.loadFromFile("./Textures/UIButtons/SimButton/SimButtonOn.png")) std::cout << "ERROR OF TEXTURE";
+    else std::cout << "CORRECTO MUNDO";
+    ui_buttons->simulate_button->on_texture = temp_texture;
     i++;
 
     // Brush Size Buttons
     ui_buttons->decrease_brush_button = std::make_unique<Minus_Button>(
         0, i * (button_size + margin), button_size, "minus_b", "-", default_font,
-        sf::Color(255, 255, 255, 10)
+        WHITE, temp_texture
     );
     ui_buttons->increase_brush_button = std::make_unique<Plus_Button>(
         5 * button_size, i * (button_size + margin), button_size, "plus_b", "+", default_font,
-        sf::Color(255, 255, 255, 10)
+        sf::Color(255, 255, 255, 10), temp_texture
     );
     ui_buttons->brush_size_label = std::make_unique<Labeled_Button>(
         -margin / 2, i * (button_size + margin), button_size, "brush_counter",
-        "brush size:" + std::to_string(brush_size), default_font, sf::Color(0, 0, 0, 0)
+        "brush size:" + std::to_string(brush_size), default_font, sf::Color(0, 0, 0, 0), temp_texture
     );
     i++;
 
     // Time Speed Buttons
     ui_buttons->increase_time_button = std::make_unique<Minus_Time_Button>(
         0, i * (button_size + margin), button_size, "minus_t_b", "-", default_font,
-        sf::Color(255, 255, 255, 10)
+        sf::Color(255, 255, 255, 10), temp_texture
     );
     ui_buttons->decrease_time_button = std::make_unique<Plus_Time_Button>(
         5 * button_size, i * (button_size + margin), button_size, "plus_t_b", "+", default_font,
-        sf::Color(255, 255, 255, 10)
+        sf::Color(255, 255, 255, 10), temp_texture
     );
     ui_buttons->time_speed_label = std::make_unique<Labeled_Button>(
         -margin / 2, i * (button_size + margin), button_size, "time_counter",
-        "time speed:" + std::to_string(sim_tpf), default_font, sf::Color(0, 0, 0, 0)
+        "time speed:" + std::to_string(sim_tpf), default_font, sf::Color(0, 0, 0, 0), temp_texture
     );
 }

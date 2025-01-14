@@ -108,25 +108,29 @@ UI_Element::UI_Element(int x, int y) {
 
 
 //Button:
-Button::Button(int x, int y, int size, sf::String name, sf::Color button_color):UI_Element(x, y) {
+Button::Button(int x, int y, int size, sf::String name, sf::Color button_color, sf::Texture &texture):UI_Element(x, y) {
     square.setPosition(pos);
     square.setSize(sf::Vector2f(size, size));
-    square.setFillColor(button_color);
+    square.setFillColor(WHITE);
+    square.setTexture(&texture);
     default_color = button_color;
     button_name = name;
+    button_texture = texture;
+    square.setTexture(&texture);
 
 }
 
 void Button::DrawItself(sf::RenderWindow& window) {
     window.draw(square);
+
 }
 void Button::Recolor(sf::Color color) {
-    square.setFillColor(color);
+    square.setFillColor(WHITE);
 }
 
 
 //Labeled_Button:
-Labeled_Button::Labeled_Button(int x, int y, int size, sf::String name,sf::String label, sf::Font &default_font, sf::Color button_color):Button(x, y, size, name, button_color) {
+Labeled_Button::Labeled_Button(int x, int y, int size, sf::String name,sf::String label, sf::Font &default_font, sf::Color button_color, sf::Texture& texture):Button(x, y, size, name, button_color, texture) {
     
     //text next to button parameters initialization
     button_label.setFont(default_font);
@@ -135,20 +139,22 @@ Labeled_Button::Labeled_Button(int x, int y, int size, sf::String name,sf::Strin
     button_label.setFillColor(WHITE);
     button_label.setScale(sf::Vector2f(1, 1));
     button_label.setPosition(sf::Vector2f(x + size + margin, y));
+    square.setTexture(&button_texture);
 }
 
 void Labeled_Button::DrawItself(sf::RenderWindow& window) {
+    
     window.draw(square);
     window.draw(button_label);
 }
 void Labeled_Button::Recolor(sf::Color color) {
-    square.setFillColor(color);
+    square.setFillColor(sf::Color(color));
 }
 
 
 //Paint_Button:
 
-Paint_Button::Paint_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color, Substances set_substance) :Labeled_Button(x, y, size, name, label, default_font, button_color) {
+Paint_Button::Paint_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color, Substances set_substance, sf::Texture& texture) :Labeled_Button(x, y, size, name, label, default_font, button_color, texture) {
     substance = set_substance;
 }
 
@@ -268,9 +274,9 @@ void Load_Button::Clicked(sf::RenderWindow& window, bool simulate, sf::Image& im
 void Simulate_Button::Simulate(bool& simulate) {
     simulate = !simulate;
     if (simulate) {
-        default_color = sf::Color(0, 255, 0);
+        square.setTexture(&on_texture);
     }
-    else default_color = sf::Color(255, 0, 0);
+    else square.setTexture(&button_texture);
 }
 
 void Simulate_Button::ToggleSimulate(bool& simulate) {
@@ -279,9 +285,9 @@ void Simulate_Button::ToggleSimulate(bool& simulate) {
         is_active = !is_active;
         simulate = is_active; // update simulate state
         if (is_active) {
-            default_color = sf::Color(0, 255, 0);
+            square.setTexture(&on_texture);
         }
-        else default_color = sf::Color(255, 0, 0); // green for active, red for inactive
+        else square.setTexture(&button_texture);; // green for active, red for inactive
         square.setFillColor(default_color);
         clicked = true; // mark as clicked
     }
@@ -297,7 +303,7 @@ void Simulate_Button::Release() {
 
 
 //Plus_Button:
-Plus_Button::Plus_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color) :Labeled_Button(x, y, size, name, label, default_font, button_color) {
+Plus_Button::Plus_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color, sf::Texture& texture) :Labeled_Button(x, y, size, name, label, default_font, button_color, texture) {
     button_label.setPosition(sf::Vector2f(x + size/3, y));
 }
 
@@ -339,7 +345,7 @@ void Plus_Button::ScrollUp(sf::RenderWindow& window, bool simulate, int& brush_s
 
 
 //Minus_Button:
-Minus_Button::Minus_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color) :Labeled_Button(x, y, size, name, label, default_font, button_color) {
+Minus_Button::Minus_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color, sf::Texture& texture) :Labeled_Button(x, y, size, name, label, default_font, button_color, texture) {
     button_label.setPosition(sf::Vector2f(x + size/3, y));
 }
 

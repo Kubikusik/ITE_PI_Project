@@ -65,10 +65,13 @@ public:
     sf::Image image;
     Grid_Tiles** grid_list = nullptr; // Pointer to grid tiles
     MenuPopup *menu_popup;
+
+    //Side background
     std::unique_ptr<UIButtonSet> ui_buttons;
+    sf::Texture SideTexture;
+    sf::RectangleShape SideUI;
 
-
-    // Constructor
+    // Constructor and destructor
     Manager();
     ~Manager();
 
