@@ -11,10 +11,16 @@ Manager::Manager() {
     window.setFramerateLimit(60);
     image.create(grid_num * (grid_size + 1), grid_num * (grid_size + 1), GetBgColor());
     menu_popup = new MenuPopup(&window, default_font);
+    menu_popup->music = &music;
     //load_menu = new LoadMenu(ble);
     CreateGrid();
     CreateButtons(button_list, color_list);  // Dereference here to pass to the function
     
+    if (!music.openFromFile("./Sounds/music.mp3")) std::cout << "Music error";
+    else std::cout << "Music good";
+    music.play();
+    music.setLoop(true);
+    music.setVolume(0.f);
 }
 
 Manager::~Manager() {

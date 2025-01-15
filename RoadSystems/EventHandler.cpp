@@ -70,6 +70,8 @@ void Event_Handler::Loop() {
             ConwaysPhysics(manager->grid_list, grid_num, manager->color_list);
         }
 
+        
+
         //update screen
         window.clear();
         RenderAll();

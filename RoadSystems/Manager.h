@@ -6,6 +6,7 @@
 #include "UIElements.h"      // Custom UI elements
 #include "Menu_Popup.h"      // MenuPopup base class
 #include <memory>
+#include "SFML/Audio.hpp"
 
 struct UIButtonSet {
     std::unique_ptr<Paint_Button> sand_button;
@@ -65,7 +66,10 @@ public:
     sf::Image image;
     Grid_Tiles** grid_list = nullptr; // Pointer to grid tiles
     MenuPopup *menu_popup;
-    //LoadMenu *load_menu;
+
+    //Sounds
+    sf::Music music;
+    sf::Sound sound;
 
     //Side background
     std::unique_ptr<UIButtonSet> ui_buttons;
