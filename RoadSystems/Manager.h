@@ -72,7 +72,7 @@ public:
     //Sounds
     sf::Music music;
     sf::Sound grid_sound;
-    sf::SoundBuffer button_sound[3];
+    sf::SoundBuffer button_sound[4];
     sf::SoundBuffer grid_sound_buff;
 
     //Side background

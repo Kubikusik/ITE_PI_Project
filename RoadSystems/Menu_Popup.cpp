@@ -161,7 +161,7 @@ void MenuPopup::MenuDraw() {
     music_volume.setString("Music Volume " + std::to_string(int(music_slider.GetValue())));
     main_window->draw(music_volume);
     music_slider.UpdateVolume(music, music_slider.GetValue());
-    sound_slider.UpdateVolume(grid_sound, music_slider.GetValue());
+    sound_slider.UpdateVolume(grid_sound, sound_slider.GetValue());
 
 }
 

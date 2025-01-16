@@ -215,6 +215,7 @@ void Event_Handler::UIButtonsInteraction(sf::Event &event) {
 
             //Left-clicking - selecting:
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                PlaySound(UIClick);
                 each.ChangePaintColor(manager->paint_color, manager->paint_substance);
             }
 
@@ -232,7 +233,7 @@ void Event_Handler::UIButtonsInteraction(sf::Event &event) {
     }
     else manager->ui_buttons->increase_brush_button->Release();
     //Minus Button clicking
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {;
         manager->ui_buttons->decrease_brush_button->Clicked(window, manager->simulate, manager->brush_size, manager->ui_buttons->brush_size_label->button_label);
     }
     else manager->ui_buttons->decrease_brush_button->Release();
@@ -297,7 +298,17 @@ void Event_Handler::UIButtonsInteraction(sf::Event &event) {
 
 void Event_Handler::PlaySound(Sounds soundtype) {
     if (soundtype == GridClick) {
+        manager->grid_sound.setBuffer(manager->grid_sound_buff);
         manager->grid_sound.setVolume(100.f);
+        manager->grid_sound.play();
+        
+    }
+    else if (soundtype == UIClick) {
+        int curr_selected = rand() % 4;
+        if (curr_selected == last_selected) curr_selected = (curr_selected + 1) % 4;
+        last_selected = curr_selected;
+        manager->grid_sound.setBuffer(manager->button_sound[curr_selected]);
+
         manager->grid_sound.play();
     }
 }

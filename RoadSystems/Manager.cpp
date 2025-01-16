@@ -28,9 +28,11 @@ void Manager::LoadSounds() {
     music.setLoop(true);
     music.setVolume(0.f);
 
-    if (button_sound[0].loadFromFile("./Sounds/Button Sounds/click-buttons-ui-menu-sounds-effects-button-7-203601.mp3")) std::cout << "Loaded button sound 1";
-
-    if (grid_sound_buff.loadFromFile("./Sounds/Grid Sounds/metronome-85688.mp3")) std::cout << "Loaded grid sound 1";
+    if (button_sound[0].loadFromFile("./Sounds/Button Sounds/click-button-166324.mp3")) std::cout << "Loaded button sound 1";
+    if (button_sound[1].loadFromFile("./Sounds/Button Sounds/button-202966.mp3")) std::cout << "Loaded button sound 2";
+    if (button_sound[2].loadFromFile("./Sounds/Button Sounds/old-radio-button-click-97549.mp3")) std::cout << "Loaded button sound 3";
+    if (button_sound[3].loadFromFile("./Sounds/Button Sounds/walkman_button.mp3")) std::cout << "Loaded button sound 3";
+    if (grid_sound_buff.loadFromFile("./Sounds/Grid Sounds/plop_grid.mp3")) std::cout << "Loaded grid sound 1";
     grid_sound.setBuffer(grid_sound_buff);
     //sound.play();
     grid_sound.setVolume(100.f);
