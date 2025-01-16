@@ -12,15 +12,29 @@ Manager::Manager() {
     image.create(grid_num * (grid_size + 1), grid_num * (grid_size + 1), GetBgColor());
     menu_popup = new MenuPopup(&window, default_font);
     menu_popup->music = &music;
+    menu_popup->grid_sound = &grid_sound;
     //load_menu = new LoadMenu(ble);
     CreateGrid();
     CreateButtons(button_list, color_list);  // Dereference here to pass to the function
+    LoadSounds();
     
-    if (!music.openFromFile("./Sounds/music.mp3")) std::cout << "Music error";
+}
+
+void Manager::LoadSounds() {
+    
+    if (!music.openFromFile("./Sounds/Music/music.mp3")) std::cout << "Music error";
     else std::cout << "Music good";
     music.play();
     music.setLoop(true);
     music.setVolume(0.f);
+
+    if (button_sound[0].loadFromFile("./Sounds/Button Sounds/click-buttons-ui-menu-sounds-effects-button-7-203601.mp3")) std::cout << "Loaded button sound 1";
+
+    if (grid_sound_buff.loadFromFile("./Sounds/Grid Sounds/metronome-85688.mp3")) std::cout << "Loaded grid sound 1";
+    grid_sound.setBuffer(grid_sound_buff);
+    //sound.play();
+    grid_sound.setVolume(100.f);
+    
 }
 
 Manager::~Manager() {

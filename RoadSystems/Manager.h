@@ -7,6 +7,8 @@
 #include "Menu_Popup.h"      // MenuPopup base class
 #include <memory>
 #include "SFML/Audio.hpp"
+#include <queue>
+
 
 struct UIButtonSet {
     std::unique_ptr<Paint_Button> sand_button;
@@ -69,7 +71,9 @@ public:
 
     //Sounds
     sf::Music music;
-    sf::Sound sound;
+    sf::Sound grid_sound;
+    sf::SoundBuffer button_sound[3];
+    sf::SoundBuffer grid_sound_buff;
 
     //Side background
     std::unique_ptr<UIButtonSet> ui_buttons;
@@ -83,6 +87,7 @@ public:
     // Methods
     void CreateGrid();
     void CreateButtons(std::vector<Paint_Button>& color_button_list, std::vector<sf::Color>& color_list);
+    void LoadSounds();
 
     
 };

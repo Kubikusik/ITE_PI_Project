@@ -3,6 +3,11 @@
 
 #include "Manager.h"
 
+enum Sounds {
+    GridClick,
+    NumClick
+};
+
 class Event_Handler {
 public:
     bool isNewFrame = true;
@@ -15,6 +20,9 @@ public:
     void RenderAll();
     void GridTilesInteraction(sf::Event &event);
     void UIButtonsInteraction(sf::Event &event);
+    void PlaySound(Sounds soundtype);
 };
+
+
 
 #endif

@@ -50,6 +50,7 @@ public:
 	void UpdateHandlePosition(sf::RenderWindow& window);  // Update the handle position based on input
 	float GetValue() const;  // Get the value of the slider
 	void UpdateVolume(sf::Music* music, float volume);
+	void UpdateVolume(sf::Sound* sound, float volume); //Overloading for the case of sound instead of music
 
 
 };
@@ -74,6 +75,7 @@ public:
 	bool first_time = true;
 
 	sf::Music* music;
+	sf::Sound* grid_sound;
 
 	//std::vector<Labeled_Button> Menu_Buttons;
 

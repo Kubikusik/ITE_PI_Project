@@ -9,6 +9,8 @@ Event_Handler::Event_Handler(Manager* manager_ref) : manager(manager_ref) {
 
 void Event_Handler::Loop() {
     sf::RenderWindow& window = manager->window;
+
+    
     //main loop, running while window wasnt closed yet
     while (window.isOpen())
     {
@@ -45,6 +47,7 @@ void Event_Handler::Loop() {
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M && manager->is_focused && !manager->simulate && isNewFrame) {
                 //menu_popup.ToggleMenuPopup(window, default_font);
                 //is_focused = false; // Main window loses focus
+
                 UpdateGridBackground(manager->grid_list, grid_num, GetBgColor());
                 manager->menu_popup->isVisible = !manager->menu_popup->isVisible;
                 isNewFrame = false;
@@ -75,8 +78,10 @@ void Event_Handler::Loop() {
         //update screen
         window.clear();
         RenderAll();
-        
+
         window.display();
+
+        
 
         //add +1 to time and if it reaches desired tpf reset it to 0 (simulation frame)
         manager->delta += 1;
@@ -118,6 +123,7 @@ void Event_Handler::RenderAll() {
         manager->menu_popup->MenuDraw();
         manager->menu_popup->first_time = false;
     }
+
 }
 
 void Event_Handler::GridTilesInteraction(sf::Event &event) {
@@ -155,6 +161,8 @@ void Event_Handler::GridTilesInteraction(sf::Event &event) {
 
                 //left click action on cell
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !manager->simulate) {
+                    
+                    PlaySound(GridClick);
 
                     for (int x = minimal_x; x <= maximal_x; x++) {
                         for (int y = minimal_y; y <= maximal_y; y++) {
@@ -285,4 +293,11 @@ void Event_Handler::UIButtonsInteraction(sf::Event &event) {
 
     //Load Button clicking
     manager->ui_buttons->load_button->Clicked(window, manager->simulate, manager->image, grid_num, grid_size, manager->grid_list);
+}
+
+void Event_Handler::PlaySound(Sounds soundtype) {
+    if (soundtype == GridClick) {
+        manager->grid_sound.setVolume(100.f);
+        manager->grid_sound.play();
+    }
 }
