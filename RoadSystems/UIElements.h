@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "tinyxml2.h"
 
 // UI constants
 extern const int grid_size;
@@ -111,7 +112,22 @@ class Load_Button : public Labeled_Button {
 public:
     Load_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color, sf::Texture& texture) :Labeled_Button(x, y, size, name, label, default_font, button_color, texture) {};
     void Load_Image(sf::Image& image, sf::String filename);
-    void Clicked(sf::RenderWindow& window, bool simulate, sf::Image& image, int grid_num, int grid_size, Grid_Tiles**& grid_list);
+    void Clicked(sf::RenderWindow& window, bool simulate, int grid_num, int grid_size, Grid_Tiles**& grid_list, bool* isVisible, bool* isNewFrame, tinyxml2::XMLDocument* stored_doc);
+};
+
+class Confirm_Button : public Labeled_Button {
+public:
+    Confirm_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color, sf::Texture& texture) :Labeled_Button(x, y, size, name, label, default_font, button_color, texture) {};
+    void Clicked(sf::RenderWindow& main_window, int grid_num, Grid_Tiles**& grid_list, tinyxml2::XMLDocument& doc, bool* isVisible);
+    sf::FloatRect getBounds() const { return square.getGlobalBounds(); }
+};
+
+
+class Cancel_Button : public Labeled_Button {
+public:
+	Cancel_Button(int x, int y, int size, sf::String name, sf::String label, sf::Font& default_font, sf::Color button_color, sf::Texture& texture) :Labeled_Button(x, y, size, name, label, default_font, button_color, texture) {};
+    void Clicked(bool* isVisible);
+    sf::FloatRect getBounds() const { return square.getGlobalBounds(); }
 };
 
 class Simulate_Button : public Labeled_Button {

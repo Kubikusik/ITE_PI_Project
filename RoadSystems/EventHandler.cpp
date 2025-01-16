@@ -116,6 +116,10 @@ void Event_Handler::RenderAll() {
         manager->menu_popup->MenuDraw();
         manager->menu_popup->first_time = false;
     }
+	if (manager->load_popup->isVisible) {
+        manager->load_popup->LoadPreset();
+        manager->load_popup->LoadDraw(manager->grid_list);
+	}
 }
 
 void Event_Handler::GridTilesInteraction(sf::Event &event) {
@@ -191,8 +195,6 @@ void Event_Handler::GridTilesInteraction(sf::Event &event) {
 void Event_Handler::UIButtonsInteraction(sf::Event &event) {
 
     sf::RenderWindow& window = manager->window;
-
-
 
     //Color buttons interactions
     for (auto& each : manager->button_list) {
@@ -282,5 +284,5 @@ void Event_Handler::UIButtonsInteraction(sf::Event &event) {
     manager->ui_buttons->save_button->Clicked(window, manager->simulate, manager->image, grid_num, grid_size, manager->grid_list);
 
     //Load Button clicking
-    manager->ui_buttons->load_button->Clicked(window, manager->simulate, manager->image, grid_num, grid_size, manager->grid_list);
+    manager->ui_buttons->load_button->Clicked(window, manager->simulate, grid_num, grid_size, manager->grid_list, &(manager->load_popup->isVisible), &isNewFrame, &(manager->load_popup->doc));
 }

@@ -217,13 +217,47 @@ void Save_Button::Clicked(sf::RenderWindow& window, bool simulate, sf::Image& im
     }
 }
 
+void Confirm_Button::Clicked(sf::RenderWindow& main_window, int grid_num, Grid_Tiles**& grid_list, tinyxml2::XMLDocument& doc, bool* isVisible) {
+    printf("confirm clicked");
+    
+    for (int i = 0; i < grid_num; i++) {
+        for (int j = 0; j < grid_num; j++) {
+            grid_list[i][j].default_color = GetBgColor();
+            grid_list[i][j].substance = DEAD;
+        }
+    }
+
+    tinyxml2::XMLElement* root = doc.FirstChildElement("bg"); //gets bg element
+    ChangeBackgroundColor(sf::Color(root->IntAttribute("r"), root->IntAttribute("g"), root->IntAttribute("b"))); //sets bg color
+    UpdateGridBackground(grid_list, grid_num, DEAD_COLOR); //updates grid background color
+    tinyxml2::XMLElement* cell = root->FirstChildElement("cell"); //gets first cell element
+    while (cell != NULL) { //while there are cells read and set their attributes
+        int x = cell->IntAttribute("x");
+        int y = cell->IntAttribute("y");
+        int r = cell->IntAttribute("r");
+        int g = cell->IntAttribute("g");
+        int b = cell->IntAttribute("b");
+        Substances s = (Substances)cell->IntAttribute("s");
+        grid_list[x][y].default_color = sf::Color(r, g, b);
+        grid_list[x][y].substance = s;
+        cell = cell->NextSiblingElement("cell"); //go to next cell
+    }
+	*isVisible = false;
+}
+
+
+void Cancel_Button::Clicked(bool* isVisible) {
+    printf("cancel clicked\n");
+	*isVisible = false;
+}
+
 //Load_Button:
 void Load_Button::Load_Image(sf::Image& image, sf::String filename) {
     filename = filename + image_format;
     image.loadFromFile(filename);
 }
 
-void Load_Button::Clicked(sf::RenderWindow& window, bool simulate, sf::Image& image, int grid_num, int grid_size, Grid_Tiles**& grid_list) {
+void Load_Button::Clicked(sf::RenderWindow& window, bool simulate, int grid_num, int grid_size, Grid_Tiles**& grid_list, bool* isVisible, bool* isNewFrame, tinyxml2::XMLDocument *stored_doc) {
     //if mouse is touching this button
     if (square.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))) {
         //Hovering mouse over cell:
@@ -231,43 +265,16 @@ void Load_Button::Clicked(sf::RenderWindow& window, bool simulate, sf::Image& im
 
         //Left-clicking hovered-over cell = adding smth:
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !simulate) {
-            //TODO: Grid will be cleared popup message
             std::string file = FileManager::GetLocation(); //opens explorer to choose file and returns path as string
+
             if (file != "") {
                 if (file.find(".xml") == std::string::npos) {
-                    //TODO: error popup
-                    Recolor(default_color);
-                    return;
+                    MessageBox(NULL, L"Invalid file format", L"Error", MB_OK | MB_ICONERROR);
                 }
-                //Clear grid (WIP: will have popup notification)
-                for (int i = 0; i < grid_num; i++) {
-                    for (int j = 0; j < grid_num; j++) {
-                        grid_list[i][j].default_color = DEAD_COLOR;
-                        grid_list[i][j].substance = DEAD;
-                    }
-                }
-
-                tinyxml2::XMLDocument doc; //initialize new XML DOM
-                doc.LoadFile(file.c_str()); //loads file
-
-				//todo: check if file is valid
-
-
-
-				tinyxml2::XMLElement* root = doc.FirstChildElement("bg"); //gets bg element
-				ChangeBackgroundColor(sf::Color(root->IntAttribute("r"), root->IntAttribute("g"), root->IntAttribute("b"))); //sets bg color
-				UpdateGridBackground(grid_list, grid_num, DEAD_COLOR); //updates grid background color
-                tinyxml2::XMLElement* cell = root->FirstChildElement("cell"); //gets first cell element
-                while (cell != NULL) { //while there are cells read and set their attributes
-                    int x = cell->IntAttribute("x");
-                    int y = cell->IntAttribute("y");
-                    int r = cell->IntAttribute("r");
-                    int g = cell->IntAttribute("g");
-                    int b = cell->IntAttribute("b");
-                    Substances s = (Substances)cell->IntAttribute("s");
-                    grid_list[x][y].default_color = sf::Color(r, g, b);
-                    grid_list[x][y].substance = s;
-                    cell = cell->NextSiblingElement("cell"); //go to next cell
+                else {
+                    stored_doc->LoadFile(file.c_str());
+                    *isVisible = !(*isVisible);
+                    *isNewFrame = false;
                 }
             }
         }

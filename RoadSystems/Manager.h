@@ -5,6 +5,7 @@
 #include <vector>
 #include "UIElements.h"      // Custom UI elements
 #include "Menu_Popup.h"      // MenuPopup base class
+#include "Load_Popup.h"      // LoadPopup base class
 #include <memory>
 
 struct UIButtonSet {
@@ -65,7 +66,7 @@ public:
     sf::Image image;
     Grid_Tiles** grid_list = nullptr; // Pointer to grid tiles
     MenuPopup *menu_popup;
-    //LoadMenu *load_menu;
+    LoadPopup *load_popup;
 
     //Side background
     std::unique_ptr<UIButtonSet> ui_buttons;
@@ -79,8 +80,6 @@ public:
     // Methods
     void CreateGrid();
     void CreateButtons(std::vector<Paint_Button>& color_button_list, std::vector<sf::Color>& color_list);
-
-    
 };
 
 #endif // MANAGER_H

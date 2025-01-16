@@ -1,6 +1,6 @@
-#pragma once
+#ifndef FILEMANAGER_H
+#define FILEMANAGER_H
 
-//#include <windows.h>
 #include <shobjidl.h> //for IFIleOpenDialog and IFileSaveDialog
 #include <string>
 
@@ -121,3 +121,5 @@ std::string FileManager::SaveLocation() {
     CoUninitialize();
     return std::string();
 }
+#endif
+#pragma once
