@@ -12,7 +12,11 @@ void Event_Handler::Loop() {
     //main loop, running while window wasnt closed yet
     while (window.isOpen())
     {
-        isNewFrame = true;
+        // Check if the cooldown period has passed
+        if (!manager->isNewFrame && manager->click_clock.getElapsedTime().asSeconds() >= manager->clickCooldownDuration) {
+            manager->isNewFrame = true; // Re-enable clicks
+        }
+
         sf::Event event;
         //checking if any event happened
         while (window.pollEvent(event))
@@ -42,12 +46,12 @@ void Event_Handler::Loop() {
             }
 
             //Menu under space button:
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M && manager->is_focused && !manager->simulate && isNewFrame) {
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M && manager->is_focused && !manager->simulate && manager->isNewFrame) {
                 //menu_popup.ToggleMenuPopup(window, default_font);
                 //is_focused = false; // Main window loses focus
                 UpdateGridBackground(manager->grid_list, grid_num, GetBgColor());
                 manager->menu_popup->isVisible = !manager->menu_popup->isVisible;
-                isNewFrame = false;
+                manager->isNewFrame = false;
             }
 
             if (manager->is_focused && !manager->menu_popup->isVisible) {
@@ -127,7 +131,7 @@ void Event_Handler::GridTilesInteraction(sf::Event &event) {
     if (event.type = sf::Event::MouseMoved) { //if mouse is moved
 
         //if window is being focused on
-        if (manager->is_focused && !manager->menu_popup->isVisible) {
+        if (manager->is_focused && !manager->menu_popup->isVisible && manager->isNewFrame) {
 
             //get position in pixels and translate it to what grid tile is that:
             sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
@@ -284,5 +288,5 @@ void Event_Handler::UIButtonsInteraction(sf::Event &event) {
     manager->ui_buttons->save_button->Clicked(window, manager->simulate, manager->image, grid_num, grid_size, manager->grid_list);
 
     //Load Button clicking
-    manager->ui_buttons->load_button->Clicked(window, manager->simulate, grid_num, grid_size, manager->grid_list, &(manager->load_popup->isVisible), &isNewFrame, &(manager->load_popup->doc));
+    manager->ui_buttons->load_button->Clicked(window, manager->simulate, grid_num, grid_size, manager->grid_list, &(manager->load_popup->isVisible), &manager->isNewFrame, &(manager->load_popup->doc));
 }

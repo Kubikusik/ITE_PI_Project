@@ -68,6 +68,11 @@ public:
     MenuPopup *menu_popup;
     LoadPopup *load_popup;
 
+
+    bool isNewFrame = true;
+    sf::Clock click_clock;
+    float clickCooldownDuration = 0.2f;
+
     //Side background
     std::unique_ptr<UIButtonSet> ui_buttons;
     sf::Texture SideTexture;

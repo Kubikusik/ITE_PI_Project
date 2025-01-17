@@ -11,7 +11,7 @@ Manager::Manager() {
     window.setFramerateLimit(60);
     image.create(grid_num * (grid_size + 1), grid_num * (grid_size + 1), GetBgColor());
     menu_popup = new MenuPopup(&window, default_font);
-	load_popup = new LoadPopup(&window, default_font);
+	load_popup = new LoadPopup(&window, default_font, &click_clock, &isNewFrame);
     CreateGrid();
     CreateButtons(button_list, color_list);  // Dereference here to pass to the function
     

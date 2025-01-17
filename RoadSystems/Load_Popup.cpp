@@ -5,7 +5,9 @@
 #include "tinyxml2.h"
 #include "windows.h"
 
-LoadPopup::LoadPopup(sf::RenderWindow* window, sf::Font font) {
+LoadPopup::LoadPopup(sf::RenderWindow* window, sf::Font font, sf::Clock *clock, bool * NewFrame) {
+    this->clock = clock;
+    this->NewFrame = NewFrame;
     this->main_window = window;
     this->default_font = font;
     grid = new Grid_Tiles* [grid_num];
@@ -161,9 +163,15 @@ void LoadPopup::LoadDraw(Grid_Tiles** main_grid) {
         sf::FloatRect cancel_bounds = cancel_button->getBounds();
 
         if (confirm_bounds.contains(static_cast<sf::Vector2f>(mouse_pos))) {
+            *NewFrame = false;
+            clock->restart();
             confirm_button->Clicked(*(this->main_window), grid_num, main_grid, doc, &(this->isVisible));
+            
         } else if (cancel_bounds.contains(static_cast<sf::Vector2f>(mouse_pos))) {
+            *NewFrame = false;
+            clock->restart();
             cancel_button->Clicked(&(this->isVisible));
+            
         }
     }
 

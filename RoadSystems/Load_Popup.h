@@ -15,13 +15,15 @@ public:
 
 	Grid_Tiles** grid = nullptr;
 	sf::Texture temp_texture;
+	sf::Clock* clock;
 
 	tinyxml2::XMLDocument doc;
 
 	const float margin = 10.0f;
 	bool isVisible = false;
+	bool* NewFrame;
 
-	LoadPopup(sf::RenderWindow* window, sf::Font font);
+	LoadPopup(sf::RenderWindow* window, sf::Font font, sf::Clock* clock, bool*NewFrame);
 	void LoadBgInit();
 	void LoadDraw(Grid_Tiles** main_grid);
 	void LoadPreset();

@@ -5,7 +5,6 @@
 
 class Event_Handler {
 public:
-    bool isNewFrame = true;
     int searched_x = 0;
     int searched_y = 0;
     Manager* manager; // Use a pointer to avoid circular dependency
