@@ -138,9 +138,11 @@ void LoadPopup::LoadDraw(Grid_Tiles** main_grid) {
         "confirm_b",
         "Confirm",
         default_font,
-        sf::Color(255, 255, 255, 255),
+        sf::Color(0, 255, 0),
         temp_texture
     );
+
+	confirm_button->Recolor(confirm_button->default_color);
 
     Cancel_Button* cancel_button = new Cancel_Button(
         button_background.getPosition().x + (button_background.getSize().x / 2) - margin,
@@ -149,9 +151,11 @@ void LoadPopup::LoadDraw(Grid_Tiles** main_grid) {
         "cancel_b",
         "Cancel",
         default_font,
-        sf::Color(255, 255, 255, 255),
+        sf::Color(255, 0, 0),
         temp_texture
     );
+
+	cancel_button->Recolor(cancel_button->default_color);
 
     confirm_button->DrawItself(*(this->main_window));
     cancel_button->DrawItself(*(this->main_window));
