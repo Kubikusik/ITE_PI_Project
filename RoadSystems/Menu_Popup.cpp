@@ -30,7 +30,7 @@ MenuPopup::MenuPopup(sf::RenderWindow* window, sf::Font& default_font) {
     }
     color_slider.Handle_Shape.setTexture(&color_slider.HandleTexture);
 
-    sound_slider = SoundSlider(sf::Vector2f(300, 500), sf::Vector2f(255, 50));
+    sound_slider = SoundSlider(sf::Vector2f(300, 500), sf::Vector2f(255, 50), 1.f);
     if (!sound_slider.HandleTexture.loadFromFile("./Textures/MenuPopup/SoundSliderHandle.png")) {
         std::cerr << "Error: Could not load the texture\n";
     }
@@ -39,7 +39,7 @@ MenuPopup::MenuPopup(sf::RenderWindow* window, sf::Font& default_font) {
     }
     sound_slider.Handle_Shape.setTexture(&sound_slider.HandleTexture);
 
-    music_slider = SoundSlider(sf::Vector2f(600, 500), sf::Vector2f(255, 50));
+    music_slider = SoundSlider(sf::Vector2f(600, 500), sf::Vector2f(255, 50), 0.f);
     if (!music_slider.HandleTexture.loadFromFile("./Textures/MenuPopup/SoundSliderHandle.png")) {
         std::cerr << "Error: Could not load the texture\n";
     }
@@ -431,7 +431,7 @@ void drawLine(sf::RenderWindow& window, sf::Vector2i point1, sf::Vector2i point2
     }
 }
 
-SoundSlider::SoundSlider(sf::Vector2f position, sf::Vector2f size) {
+SoundSlider::SoundSlider(sf::Vector2f position, sf::Vector2f size, float start_setup) {
     // Initialize the slider background (a vertical bar)
     Slider_Shape.setPosition(position);
     Slider_Shape.setSize(size);
@@ -440,7 +440,7 @@ SoundSlider::SoundSlider(sf::Vector2f position, sf::Vector2f size) {
     // Initialize the handle (the draggable part)
     Handle_Shape.setSize(sf::Vector2f(20, size.y));  // Handle width matches the slider width
     //Handle_Shape.setFillColor(sf::Color::Black);  // Black handle
-    Handle_Shape.setPosition(position.x, position.y);  // Position at the top
+    Handle_Shape.setPosition(position.x + start_setup* size.x -20*start_setup, position.y);  // Position at the top
 
 }
 

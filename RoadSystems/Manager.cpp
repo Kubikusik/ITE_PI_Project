@@ -76,7 +76,7 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     
 
     // Sand Button
-    if (!temp_texture.loadFromFile("./Textures/UIButtons/SubstanceButtons/SubstanceTemp.png")) std::cout << "ERROR OF TEXTURE";
+    if (!temp_texture.loadFromFile("./Textures/UIButtons/SubstanceButtons/SubstanceSand.png")) std::cout << "ERROR OF TEXTURE";
     else std::cout << "CORRECTO MUNDO";
 
     ui_buttons->sand_button = std::make_unique<Paint_Button>(
@@ -88,6 +88,8 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     i++;
 
     // Plant Button
+    if (!temp_texture.loadFromFile("./Textures/UIButtons/SubstanceButtons/SubstancePlant.png")) std::cout << "ERROR OF TEXTURE";
+    else std::cout << "CORRECTO MUNDO";
     ui_buttons->plant_button = std::make_unique<Paint_Button>(
         0, i * (button_size + margin), button_size, "green_b", "Plant", default_font,
         WHITE, PLANT, temp_texture
@@ -97,6 +99,8 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     i++;
 
     // Water Button
+    if (!temp_texture.loadFromFile("./Textures/UIButtons/SubstanceButtons/SubstanceWater.png")) std::cout << "ERROR OF TEXTURE";
+    else std::cout << "CORRECTO MUNDO";
     ui_buttons->water_button = std::make_unique<Paint_Button>(
         0, i * (button_size + margin), button_size, "water_b", "Water", default_font,
         WHITE, WATER, temp_texture
@@ -106,6 +110,7 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     i++;
 
     // Fire Button
+    if (!temp_texture.loadFromFile("./Textures/UIButtons/SubstanceButtons/SubstanceFire.png")) std::cout << "ERROR OF TEXTURE";
     ui_buttons->fire_button = std::make_unique<Paint_Button>(
         0, i * (button_size + margin), button_size, "red_b", "Fire", default_font,
         WHITE, FIRE, temp_texture
@@ -115,6 +120,7 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     i++;
 
     // Steel Button
+    if (!temp_texture.loadFromFile("./Textures/UIButtons/SubstanceButtons/SubstanceSteel.png")) std::cout << "ERROR OF TEXTURE";
     ui_buttons->steel_button = std::make_unique<Paint_Button>(
         0, i * (button_size + margin), button_size, "steel_b", "Steel", default_font,
         WHITE, STEEL, temp_texture
@@ -124,6 +130,7 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     i++;
 
     // Conway Button
+    if (!temp_texture.loadFromFile("./Textures/UIButtons/SubstanceButtons/SubstanceNanomachine.png")) std::cout << "ERROR OF TEXTURE";
     ui_buttons->conway_button = std::make_unique<Paint_Button>(
         0, i * (button_size + margin), button_size, "conway_b", "Nanomachine", default_font,
         WHITE, CONWAY, temp_texture
@@ -133,6 +140,7 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     i++;
 
     // Cable Button
+    if (!temp_texture.loadFromFile("./Textures/UIButtons/SubstanceButtons/SubstanceCable.png")) std::cout << "ERROR OF TEXTURE";
     ui_buttons->cable_button = std::make_unique<Paint_Button>(
         0, i * (button_size + margin), button_size, "cable_b", "Cable", default_font,
         WHITE, CABLE, temp_texture
@@ -142,6 +150,7 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     i++;
 
     // Save Button
+    if (!temp_texture.loadFromFile("./Textures/UIButtons/SaveButton.png")) std::cout << "ERROR OF TEXTURE";
     ui_buttons->save_button = std::make_unique<Save_Button>(
         0, i * (button_size + margin), button_size, "save_b", "Save", default_font,
         WHITE, temp_texture
@@ -149,6 +158,7 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     i++;
 
     // Load Button
+    if (!temp_texture.loadFromFile("./Textures/UIButtons/LoadButton.png")) std::cout << "ERROR OF TEXTURE";
     ui_buttons->load_button = std::make_unique<Load_Button>(
         0, i * (button_size + margin), button_size, "load_b", "Load", default_font,
         WHITE, temp_texture
@@ -168,7 +178,9 @@ void Manager::CreateButtons(std::vector<Paint_Button>& color_button_list, std::v
     ui_buttons->simulate_button->on_texture = temp_texture;
     i++;
 
+
     // Brush Size Buttons
+    if (!temp_texture.loadFromFile("./Textures/UIButtons/empty.png")) std::cout << "ERROR OF TEXTURE";
     ui_buttons->decrease_brush_button = std::make_unique<Minus_Button>(
         0, i * (button_size + margin), button_size, "minus_b", "-", default_font,
         WHITE, temp_texture

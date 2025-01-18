@@ -45,7 +45,7 @@ public:
 		Handle_Shape.setFillColor(sf::Color::Black);     // Default handle color
 	}
 
-	SoundSlider(sf::Vector2f position, sf::Vector2f size);  // Constructor to initialize the slider
+	SoundSlider(sf::Vector2f position, sf::Vector2f size, float start_setup);  // Constructor to initialize the slider
 	void DrawItself(sf::RenderWindow& window);  // Draw the slider
 	void UpdateHandlePosition(sf::RenderWindow& window);  // Update the handle position based on input
 	float GetValue() const;  // Get the value of the slider

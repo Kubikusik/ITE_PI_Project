@@ -15,7 +15,7 @@ void Event_Handler::Loop() {
     while (window.isOpen())
     {
         // Check if the cooldown period has passed
-        if (!manager->isNewFrame && manager->click_clock.getElapsedTime().asSeconds() >= manager->clickCooldownDuration) {
+        if (!manager->load_popup->isVisible && !manager->isNewFrame && manager->click_clock.getElapsedTime().asSeconds() >= manager->clickCooldownDuration) {
             manager->isNewFrame = true; // Re-enable clicks
         }
 
@@ -298,13 +298,13 @@ void Event_Handler::UIButtonsInteraction(sf::Event &event) {
     manager->ui_buttons->save_button->Clicked(window, manager->simulate, manager->image, grid_num, grid_size, manager->grid_list);
 
     //Load Button clicking
-    manager->ui_buttons->load_button->Clicked(window, manager->simulate, manager->image, grid_num, grid_size, manager->grid_list);
+    manager->ui_buttons->load_button->Clicked(window, manager->simulate, grid_num, grid_size, manager->grid_list, &(manager->load_popup->isVisible), &manager->isNewFrame, &(manager->load_popup->doc));
 }
 
 void Event_Handler::PlaySound(Sounds soundtype) {
     if (soundtype == GridClick) {
         manager->grid_sound.setBuffer(manager->grid_sound_buff);
-        manager->grid_sound.setVolume(100.f);
+        //manager->grid_sound.setVolume(100.f);
         manager->grid_sound.play();
         
     }
@@ -317,5 +317,4 @@ void Event_Handler::PlaySound(Sounds soundtype) {
         manager->grid_sound.play();
     }
 }
-    manager->ui_buttons->load_button->Clicked(window, manager->simulate, grid_num, grid_size, manager->grid_list, &(manager->load_popup->isVisible), &manager->isNewFrame, &(manager->load_popup->doc));
-}
+    
