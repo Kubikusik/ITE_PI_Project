@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <random>
+#include "ConwaysGameOfLifePhysics.h"
 
 
 //constants:

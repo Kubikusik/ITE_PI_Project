@@ -24,7 +24,7 @@
     <ClCompile Include="ConwaysGameOfLife.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConwaysGameOfLifeMaksiowy.cpp">
+    <ClCompile Include="ConwaysGameOfLifePhysics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="tinyxml2.cpp">
@@ -53,7 +53,7 @@
     <ClInclude Include="ConwaysGameOfLife.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ConwaysGameOfLifeMaksiowy.h">
+    <ClInclude Include="ConwaysGameOfLifePhysics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FileManager.h">

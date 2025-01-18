@@ -1,5 +1,5 @@
 #include "EventHandler.h"
-#include "ConwaysGameOfLifeMaksiowy.h"
+#include "ConwaysGameOfLifePhysics.h"
 
 
 Event_Handler::Event_Handler(Manager* manager_ref) : manager(manager_ref) {
