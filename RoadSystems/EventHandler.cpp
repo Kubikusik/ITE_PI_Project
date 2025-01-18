@@ -9,6 +9,8 @@ Event_Handler::Event_Handler(Manager* manager_ref) : manager(manager_ref) {
 
 void Event_Handler::Loop() {
     sf::RenderWindow& window = manager->window;
+
+    
     //main loop, running while window wasnt closed yet
     while (window.isOpen())
     {
@@ -49,6 +51,7 @@ void Event_Handler::Loop() {
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M && manager->is_focused && !manager->simulate && manager->isNewFrame) {
                 //menu_popup.ToggleMenuPopup(window, default_font);
                 //is_focused = false; // Main window loses focus
+
                 UpdateGridBackground(manager->grid_list, grid_num, GetBgColor());
                 manager->menu_popup->isVisible = !manager->menu_popup->isVisible;
                 manager->isNewFrame = false;
@@ -74,11 +77,15 @@ void Event_Handler::Loop() {
             ConwaysPhysics(manager->grid_list, grid_num, manager->color_list);
         }
 
+        
+
         //update screen
         window.clear();
         RenderAll();
-        
+
         window.display();
+
+        
 
         //add +1 to time and if it reaches desired tpf reset it to 0 (simulation frame)
         manager->delta += 1;
@@ -161,6 +168,8 @@ void Event_Handler::GridTilesInteraction(sf::Event &event) {
 
                 //left click action on cell
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !manager->simulate) {
+                    
+                    PlaySound(GridClick);
 
                     for (int x = minimal_x; x <= maximal_x; x++) {
                         for (int y = minimal_y; y <= maximal_y; y++) {
@@ -211,6 +220,7 @@ void Event_Handler::UIButtonsInteraction(sf::Event &event) {
 
             //Left-clicking - selecting:
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                PlaySound(UIClick);
                 each.ChangePaintColor(manager->paint_color, manager->paint_substance);
             }
 
@@ -228,7 +238,7 @@ void Event_Handler::UIButtonsInteraction(sf::Event &event) {
     }
     else manager->ui_buttons->increase_brush_button->Release();
     //Minus Button clicking
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {;
         manager->ui_buttons->decrease_brush_button->Clicked(window, manager->simulate, manager->brush_size, manager->ui_buttons->brush_size_label->button_label);
     }
     else manager->ui_buttons->decrease_brush_button->Release();
@@ -288,5 +298,24 @@ void Event_Handler::UIButtonsInteraction(sf::Event &event) {
     manager->ui_buttons->save_button->Clicked(window, manager->simulate, manager->image, grid_num, grid_size, manager->grid_list);
 
     //Load Button clicking
+    manager->ui_buttons->load_button->Clicked(window, manager->simulate, manager->image, grid_num, grid_size, manager->grid_list);
+}
+
+void Event_Handler::PlaySound(Sounds soundtype) {
+    if (soundtype == GridClick) {
+        manager->grid_sound.setBuffer(manager->grid_sound_buff);
+        manager->grid_sound.setVolume(100.f);
+        manager->grid_sound.play();
+        
+    }
+    else if (soundtype == UIClick) {
+        int curr_selected = rand() % 4;
+        if (curr_selected == last_selected) curr_selected = (curr_selected + 1) % 4;
+        last_selected = curr_selected;
+        manager->grid_sound.setBuffer(manager->button_sound[curr_selected]);
+
+        manager->grid_sound.play();
+    }
+}
     manager->ui_buttons->load_button->Clicked(window, manager->simulate, grid_num, grid_size, manager->grid_list, &(manager->load_popup->isVisible), &manager->isNewFrame, &(manager->load_popup->doc));
 }

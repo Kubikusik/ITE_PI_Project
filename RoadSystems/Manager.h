@@ -7,6 +7,9 @@
 #include "Menu_Popup.h"      // MenuPopup base class
 #include "Load_Popup.h"      // LoadPopup base class
 #include <memory>
+#include "SFML/Audio.hpp"
+#include <queue>
+
 
 struct UIButtonSet {
     std::unique_ptr<Paint_Button> sand_button;
@@ -73,6 +76,12 @@ public:
     sf::Clock click_clock;
     float clickCooldownDuration = 0.2f;
 
+    //Sounds
+    sf::Music music;
+    sf::Sound grid_sound;
+    sf::SoundBuffer button_sound[4];
+    sf::SoundBuffer grid_sound_buff;
+
     //Side background
     std::unique_ptr<UIButtonSet> ui_buttons;
     sf::Texture SideTexture;
@@ -85,6 +94,9 @@ public:
     // Methods
     void CreateGrid();
     void CreateButtons(std::vector<Paint_Button>& color_button_list, std::vector<sf::Color>& color_list);
+    void LoadSounds();
+
+    
 };
 
 #endif // MANAGER_H

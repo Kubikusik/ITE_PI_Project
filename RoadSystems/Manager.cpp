@@ -12,8 +12,31 @@ Manager::Manager() {
     image.create(grid_num * (grid_size + 1), grid_num * (grid_size + 1), GetBgColor());
     menu_popup = new MenuPopup(&window, default_font);
 	load_popup = new LoadPopup(&window, default_font, &click_clock, &isNewFrame);
+    menu_popup->music = &music;
+    menu_popup->grid_sound = &grid_sound;
+    //load_menu = new LoadMenu(ble);
     CreateGrid();
     CreateButtons(button_list, color_list);  // Dereference here to pass to the function
+    LoadSounds();
+    
+}
+
+void Manager::LoadSounds() {
+    
+    if (!music.openFromFile("./Sounds/Music/music.mp3")) std::cout << "Music error";
+    else std::cout << "Music good";
+    music.play();
+    music.setLoop(true);
+    music.setVolume(0.f);
+
+    if (button_sound[0].loadFromFile("./Sounds/Button Sounds/click-button-166324.mp3")) std::cout << "Loaded button sound 1";
+    if (button_sound[1].loadFromFile("./Sounds/Button Sounds/button-202966.mp3")) std::cout << "Loaded button sound 2";
+    if (button_sound[2].loadFromFile("./Sounds/Button Sounds/old-radio-button-click-97549.mp3")) std::cout << "Loaded button sound 3";
+    if (button_sound[3].loadFromFile("./Sounds/Button Sounds/walkman_button.mp3")) std::cout << "Loaded button sound 3";
+    if (grid_sound_buff.loadFromFile("./Sounds/Grid Sounds/plop_grid.mp3")) std::cout << "Loaded grid sound 1";
+    grid_sound.setBuffer(grid_sound_buff);
+    //sound.play();
+    grid_sound.setVolume(100.f);
     
 }
 

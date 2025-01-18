@@ -29,6 +29,24 @@ MenuPopup::MenuPopup(sf::RenderWindow* window, sf::Font& default_font) {
         std::cout << "Texture loaded successfully\n";
     }
     color_slider.Handle_Shape.setTexture(&color_slider.HandleTexture);
+
+    sound_slider = SoundSlider(sf::Vector2f(300, 500), sf::Vector2f(255, 50));
+    if (!sound_slider.HandleTexture.loadFromFile("./Textures/MenuPopup/SoundSliderHandle.png")) {
+        std::cerr << "Error: Could not load the texture\n";
+    }
+    else {
+        std::cout << "Texture loaded successfully\n";
+    }
+    sound_slider.Handle_Shape.setTexture(&sound_slider.HandleTexture);
+
+    music_slider = SoundSlider(sf::Vector2f(600, 500), sf::Vector2f(255, 50));
+    if (!music_slider.HandleTexture.loadFromFile("./Textures/MenuPopup/SoundSliderHandle.png")) {
+        std::cerr << "Error: Could not load the texture\n";
+    }
+    else {
+        std::cout << "Texture loaded successfully\n";
+    }
+    music_slider.Handle_Shape.setTexture(&music_slider.HandleTexture);
 }
 
 void MenuPopup::MenuBgInit() {
@@ -119,11 +137,32 @@ void MenuPopup::MenuDraw() {
     decrease_B.DrawItself(*(this->main_window));*/
     DrawGradient(*main_window); // Draw the gradient
     HandleMouseClick(*main_window); // Handle clicks on the gradient and slider
-    
+    sound_slider.UpdateHandlePosition(*main_window);
 
     // Adjust the background color based on the slider
-    color_slider.DrawItself(*(this->main_window)); // Draw slider last
+    color_slider.DrawItself(*main_window); // Draw slider last
     this->main_window->draw(color_display);
+    sound_slider.DrawItself(*main_window);
+    music_slider.DrawItself(*main_window);
+
+    sf::Text sound_volume;
+    sound_volume.setFont(default_font);
+    sound_volume.setCharacterSize(20);
+    sound_volume.setPosition(sound_slider.Slider_Shape.getPosition().x, sound_slider.Slider_Shape.getPosition().y - 30);
+    sound_volume.setFillColor(sf::Color::Black);
+    sound_volume.setString("Sound Volume " + std::to_string(int(sound_slider.GetValue())));
+    main_window->draw(sound_volume);
+
+    sf::Text music_volume;
+    music_volume.setFont(default_font);
+    music_volume.setCharacterSize(20);
+    music_volume.setPosition(music_slider.Slider_Shape.getPosition().x, music_slider.Slider_Shape.getPosition().y - 30);
+    music_volume.setFillColor(sf::Color::Black);
+    music_volume.setString("Music Volume " + std::to_string(int(music_slider.GetValue())));
+    main_window->draw(music_volume);
+    music_slider.UpdateVolume(music, music_slider.GetValue());
+    sound_slider.UpdateVolume(grid_sound, sound_slider.GetValue());
+
 }
 
 
@@ -390,4 +429,75 @@ void drawLine(sf::RenderWindow& window, sf::Vector2i point1, sf::Vector2i point2
             y0 += sy;
         }
     }
+}
+
+SoundSlider::SoundSlider(sf::Vector2f position, sf::Vector2f size) {
+    // Initialize the slider background (a vertical bar)
+    Slider_Shape.setPosition(position);
+    Slider_Shape.setSize(size);
+    Slider_Shape.setFillColor(sf::Color(150, 150, 150));  // Grey background
+
+    // Initialize the handle (the draggable part)
+    Handle_Shape.setSize(sf::Vector2f(20, size.y));  // Handle width matches the slider width
+    //Handle_Shape.setFillColor(sf::Color::Black);  // Black handle
+    Handle_Shape.setPosition(position.x, position.y);  // Position at the top
+
+}
+
+void SoundSlider::UpdateHandlePosition(sf::RenderWindow& window) {
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
+
+    // Check if mouse is within the handle's bounds and if the left button is pressedm
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        if (Handle_Shape.getGlobalBounds().contains(worldPos) || isDragging) {
+            isDragging = true;  // Start dragging if the handle is clicked
+
+            // Clamp the new position to stay within the slider's bounds
+            float newX = std::max(Slider_Shape.getPosition().x,
+                std::min(worldPos.x, Slider_Shape.getPosition().x + Slider_Shape.getSize().x - Handle_Shape.getSize().x));
+
+            Handle_Shape.setPosition(newX, Handle_Shape.getPosition().y);  // Update handle's Y position
+        }
+    }
+    else {
+        isDragging = false;  // Stop dragging when the mouse is released
+
+    }
+}
+
+void SoundSlider::DrawItself(sf::RenderWindow& window) {
+    UpdateHandlePosition(window);  // Update handle position based on mouse input
+
+    // Draw the slider background and the handle
+    window.draw(Slider_Shape);
+
+    float pos_x = Slider_Shape.getPosition().x;
+    float pos_y = Slider_Shape.getPosition().y;
+    float segment_height = Slider_Shape.getSize().y / 360;
+
+    // Use `previous_bottom` to ensure continuity between segments
+    float previous_bottom = pos_y;
+
+    window.draw(Handle_Shape);
+}
+
+float SoundSlider::GetValue() const{
+    float handlePositionX = Handle_Shape.getPosition().x;
+    float sliderTopX = Slider_Shape.getPosition().x;
+    float sliderWidth = Slider_Shape.getSize().x;
+
+    // Calculate the relative position (value between 0 and 1)
+    float normalizedValue = (handlePositionX - sliderTopX) / (sliderWidth - Handle_Shape.getSize().x);
+
+    // Scale the value to be between 0 and 100 (hue)
+    return normalizedValue * 100.0f;
+}
+
+void SoundSlider::UpdateVolume(sf::Music* music, float volume) {
+    music->setVolume(volume);
+}
+
+void SoundSlider::UpdateVolume(sf::Sound* sound, float volume) {
+    sound->setVolume(volume);
 }
