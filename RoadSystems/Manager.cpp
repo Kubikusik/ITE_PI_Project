@@ -7,7 +7,7 @@ Manager::Manager() {
     default_font.loadFromFile("OpenSansRegular.ttf");
     ChangeBackgroundColor(bg_color);
     paint_color = SAND_COLOR;
-    window.create(sf::VideoMode(map_x + ui_size, map_y), "Conways Simulation", sf::Style::Default);
+    window.create(sf::VideoMode(map_x + ui_size, map_y), "GridBound", sf::Style::Default);
     window.setFramerateLimit(60);
     image.create(grid_num * (grid_size + 1), grid_num * (grid_size + 1), GetBgColor());
     menu_popup = new MenuPopup(&window, default_font);
