@@ -154,6 +154,7 @@
     <ClCompile Include="Menu_Popup.cpp" />
     <ClCompile Include="Menu_Popup.h" />
     <ClCompile Include="tinyxml2.cpp" />
+    <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="UIElements.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +165,7 @@
     <ClInclude Include="Load_Popup.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="tinyxml2.h" />
+    <ClInclude Include="Tutorial.h" />
     <ClInclude Include="UIElements.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

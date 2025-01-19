@@ -9,6 +9,7 @@
 #include <memory>
 #include "SFML/Audio.hpp"
 #include <queue>
+#include "Tutorial.h"
 
 
 struct UIButtonSet {
@@ -70,6 +71,8 @@ public:
     Grid_Tiles** grid_list = nullptr; // Pointer to grid tiles
     MenuPopup *menu_popup;
     LoadPopup *load_popup;
+    TutorialWindow *tutorial_window;
+    Tutorial_Button *tutorial_button;
 
 
     bool isNewFrame = true;

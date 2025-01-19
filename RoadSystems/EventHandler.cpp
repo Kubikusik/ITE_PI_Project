@@ -42,9 +42,19 @@ void Event_Handler::Loop() {
                 window.setView(sf::View(visibleArea));
 
             }
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape && manager->tutorial_window->tutorialActive) {
+                manager->tutorial_window->tutorialActive = false;
+            }
 
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape && manager->is_focused) { //escape pressed closes window
+            else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape && manager->is_focused) { //escape pressed closes window
                 window.close();
+            }
+
+            if (event.type == sf::Event::MouseButtonPressed && !manager->tutorial_window->tutorialActive && manager->is_focused && !manager->simulate && manager->isNewFrame) {
+                if (manager->tutorial_button->isClicked(sf::Mouse::getPosition(window))) {
+                    manager->tutorial_window->tutorialActive = true;
+                    manager->isNewFrame = false;
+                }
             }
 
             //Menu under space button:
@@ -57,7 +67,7 @@ void Event_Handler::Loop() {
                 manager->isNewFrame = false;
             }
 
-            if (manager->is_focused && !manager->menu_popup->isVisible) {
+            if (manager->is_focused && !manager->menu_popup->isVisible && !manager->tutorial_window->tutorialActive) {
 
                 //recolor back after hovering
                 for (int i = 0; i < grid_num; i++) {
@@ -98,7 +108,10 @@ void Event_Handler::RenderAll() {
 
     sf::RenderWindow& window = manager->window;
 
+    
+
     window.draw(manager->SideUI);
+    manager->tutorial_button->draw(window);
 
     //Draw Grid
     for (int i = 0; i < grid_num; i++) {
@@ -131,6 +144,10 @@ void Event_Handler::RenderAll() {
         manager->load_popup->LoadPreset();
         manager->load_popup->LoadDraw(manager->grid_list);
 	}
+    
+    if (manager->tutorial_window->tutorialActive == true) {
+        manager->tutorial_window->display(window);
+    }
 }
 
 void Event_Handler::GridTilesInteraction(sf::Event &event) {
@@ -138,7 +155,7 @@ void Event_Handler::GridTilesInteraction(sf::Event &event) {
     if (event.type = sf::Event::MouseMoved) { //if mouse is moved
 
         //if window is being focused on
-        if (manager->is_focused && !manager->menu_popup->isVisible && manager->isNewFrame) {
+        if (manager->is_focused && !manager->menu_popup->isVisible && manager->isNewFrame && !manager->tutorial_window->tutorialActive) {
 
             //get position in pixels and translate it to what grid tile is that:
             sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
