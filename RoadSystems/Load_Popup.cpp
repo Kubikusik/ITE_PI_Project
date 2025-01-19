@@ -27,9 +27,8 @@ LoadPopup::LoadPopup(sf::RenderWindow* window, sf::Font font, sf::Clock *clock, 
     LoadBgInit();
 }
 
-void LoadPopup::LoadPreset() {
+bool LoadPopup::LoadPreset() {
     try {
-
         for (int i = 0; i < grid_num; i++) {
             for (int j = 0; j < grid_num; j++) {
                 grid[i][j].default_color = GetBgColor();
@@ -37,25 +36,48 @@ void LoadPopup::LoadPreset() {
             }
         }
 
-        tinyxml2::XMLElement* root = doc.FirstChildElement("bg"); //gets bg element
-        ChangeBackgroundColor(sf::Color(root->IntAttribute("r"), root->IntAttribute("g"), root->IntAttribute("b"))); //sets bg color
-        UpdateGridBackground(grid, grid_num, DEAD_COLOR); //updates grid background color
-        tinyxml2::XMLElement* cell = root->FirstChildElement("cell"); //gets first cell element
-        while (cell != NULL) { //while there are cells read and set their attributes
+        tinyxml2::XMLElement* root = doc.FirstChildElement("bg"); // gets bg element
+        if (root == nullptr) {
+            throw std::runtime_error("Invalid XML file format.");
+        }
+
+        ChangeBackgroundColor(sf::Color(root->IntAttribute("r"), root->IntAttribute("g"), root->IntAttribute("b"))); // sets bg color
+        UpdateGridBackground(grid, grid_num, DEAD_COLOR); // updates grid background color
+
+        tinyxml2::XMLElement* cell = root->FirstChildElement("cell"); // gets first cell element
+        while (cell != nullptr) { // while there are cells read and set their attributes
             int x = cell->IntAttribute("x");
             int y = cell->IntAttribute("y");
             int r = cell->IntAttribute("r");
             int g = cell->IntAttribute("g");
             int b = cell->IntAttribute("b");
             Substances s = (Substances)cell->IntAttribute("s");
+            if (x < 0 || x >= grid_num || y < 0 || y >= grid_num) {
+                throw std::runtime_error("Cell coordinates out of bounds.");
+            }
+			if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255) {
+				throw std::runtime_error("Invalid color values.");
+			}
+			if (s < 0 || s >= 10) {
+				throw std::runtime_error("Invalid substance value.");
+			}
+            
             grid[x][y].default_color = sf::Color(r, g, b);
             grid[x][y].substance = s;
-            cell = cell->NextSiblingElement("cell"); //go to next cell
+            cell = cell->NextSiblingElement("cell"); // go to next cell
         }
     }
     catch (const std::exception& e) {
         MessageBox(NULL, (L"Error while loading preview: " + std::wstring(e.what(), e.what() + strlen(e.what()))).c_str(), L"Error", MB_OK | MB_ICONERROR);
+        this->isVisible = false;
+        return false;
     }
+    catch (...) {
+        MessageBox(NULL, L"Unknown error while loading preview.", L"Error", MB_OK | MB_ICONERROR);
+        this->isVisible = false;
+        return false;
+    }
+    return true;
 }
 
 
@@ -156,7 +178,6 @@ void LoadPopup::LoadDraw(Grid_Tiles** main_grid) {
     );
 
 	cancel_button->Recolor(cancel_button->default_color);
-
     confirm_button->DrawItself(*(this->main_window));
     cancel_button->DrawItself(*(this->main_window));
 
@@ -169,13 +190,14 @@ void LoadPopup::LoadDraw(Grid_Tiles** main_grid) {
         if (confirm_bounds.contains(static_cast<sf::Vector2f>(mouse_pos))) {
             *NewFrame = false;
             clock->restart();
+            this->first_time = true;
             confirm_button->Clicked(*(this->main_window), grid_num, main_grid, doc, &(this->isVisible));
             
         } else if (cancel_bounds.contains(static_cast<sf::Vector2f>(mouse_pos))) {
             *NewFrame = false;
             clock->restart();
+            this->first_time = true;
             cancel_button->Clicked(&(this->isVisible));
-            
         }
     }
 

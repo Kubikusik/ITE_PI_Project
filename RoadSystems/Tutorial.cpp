@@ -33,7 +33,8 @@ TutorialWindow::TutorialWindow() {
     text2.setString("This is an introduction to GRIDBOUND.\n"
         "Press the buttons on the left to draw on the grid.\n"
         "When you're done, click RUN.\n"
-        "REMEMBER: Press 'M' for the menu to change colors or adjust sounds.");
+        "REMEMBER: Press 'M' for the menu to change colors or adjust sounds.\n\n"
+        "Press 'ESC' to close this window.");
     text2.setCharacterSize(24);
     text2.setFillColor(sf::Color::White);
     text2.setScale(sf::Vector2f(1, 1));

@@ -107,8 +107,6 @@ void Event_Handler::Loop() {
 
         window.display();
 
-        
-
         //add +1 to time and if it reaches desired tpf reset it to 0 (simulation frame)
         manager->delta += 1;
         manager->delta = manager->delta % manager->sim_tpf;
@@ -153,15 +151,17 @@ void Event_Handler::RenderAll() {
         manager->menu_popup->MenuDraw();
         manager->menu_popup->first_time = false;
     }
-	if (manager->load_popup->isVisible) {
-        manager->load_popup->LoadPreset();
-        manager->load_popup->LoadDraw(manager->grid_list);
-	}
-    
     if (manager->tutorial_window->tutorialActive == true) {
         manager->tutorial_window->display(window);
     }
 
+    if (manager->load_popup->isVisible) {
+        if (manager->load_popup->first_time) {
+			if (manager->load_popup->loaded_preset = manager->load_popup->LoadPreset()) manager->load_popup->first_time = false;
+			else manager->load_popup->isVisible = false;
+        }
+        if(manager->load_popup->loaded_preset) manager->load_popup->LoadDraw(manager->grid_list);
+    }
 }
 
 void Event_Handler::GridTilesInteraction(sf::Event &event) {
