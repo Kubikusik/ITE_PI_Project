@@ -1,19 +1,11 @@
 #include "Tutorial.h"
 
-Tutorial_Button::Tutorial_Button(float x, float y, const std::string& label) {
+Tutorial_Button::Tutorial_Button(float x, float y, const std::string& label, sf::Texture texture) {
     shape.setSize(sf::Vector2f(50, 50));
     shape.setPosition(x, y);
-    shape.setFillColor(sf::Color::Blue);
-
-    if (!font.loadFromFile("OpenSansRegular.ttf")) {
-        std::cerr << "Failed to load font!" << std::endl;
-    }
-    text.setFont(font);
-    text.setString(label);
-    text.setCharacterSize(20);
-    text.setFillColor(sf::Color::White);
-    text.setScale(sf::Vector2f(1, 1));
-    text.setPosition(sf::Vector2f(x + 50 - label.size()*10, y + 15));
+    shape.setFillColor(sf::Color::White);
+    this->texture = texture;
+    shape.setTexture(&this->texture);
 }
 
 void Tutorial_Button::draw(sf::RenderWindow& window) {
