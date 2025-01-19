@@ -16,6 +16,7 @@ Manager::Manager() {
     menu_popup->grid_sound = &grid_sound;
     tutorial_window = new TutorialWindow();
     tutorial_button = new Tutorial_Button(250, 0, "Info");
+    m_menu_button = new Tutorial_Button(250, 70, "M  ");
     //load_menu = new LoadMenu(ble);
     CreateGrid();
     CreateButtons(button_list, color_list);  // Dereference here to pass to the function

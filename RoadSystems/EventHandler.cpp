@@ -45,14 +45,26 @@ void Event_Handler::Loop() {
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape && manager->tutorial_window->tutorialActive) {
                 manager->tutorial_window->tutorialActive = false;
             }
+            else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape && manager->menu_popup->isVisible) {
+                manager->menu_popup->isVisible = !manager->menu_popup->isVisible;
+                manager->isNewFrame = false;
+            }
 
             else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape && manager->is_focused) { //escape pressed closes window
                 window.close();
             }
 
-            if (event.type == sf::Event::MouseButtonPressed && !manager->tutorial_window->tutorialActive && manager->is_focused && !manager->simulate && manager->isNewFrame) {
+            if (event.type == sf::Event::MouseButtonPressed && !manager->tutorial_window->tutorialActive && manager->is_focused && !manager->simulate && manager->isNewFrame && !manager->menu_popup->isVisible) {
                 if (manager->tutorial_button->isClicked(sf::Mouse::getPosition(window))) {
                     manager->tutorial_window->tutorialActive = true;
+                    manager->isNewFrame = false;
+                }
+            }
+
+            if (event.type == sf::Event::MouseButtonPressed && !manager->tutorial_window->tutorialActive && manager->is_focused && !manager->simulate && manager->isNewFrame && !manager->menu_popup->isVisible) {
+                if (manager->m_menu_button->isClicked(sf::Mouse::getPosition(window))) {
+                    UpdateGridBackground(manager->grid_list, grid_num, GetBgColor());
+                    manager->menu_popup->isVisible = !manager->menu_popup->isVisible;
                     manager->isNewFrame = false;
                 }
             }
@@ -112,6 +124,7 @@ void Event_Handler::RenderAll() {
 
     window.draw(manager->SideUI);
     manager->tutorial_button->draw(window);
+    manager->m_menu_button->draw(window);
 
     //Draw Grid
     for (int i = 0; i < grid_num; i++) {
@@ -148,6 +161,7 @@ void Event_Handler::RenderAll() {
     if (manager->tutorial_window->tutorialActive == true) {
         manager->tutorial_window->display(window);
     }
+
 }
 
 void Event_Handler::GridTilesInteraction(sf::Event &event) {

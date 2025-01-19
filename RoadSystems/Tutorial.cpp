@@ -13,7 +13,7 @@ Tutorial_Button::Tutorial_Button(float x, float y, const std::string& label) {
     text.setCharacterSize(20);
     text.setFillColor(sf::Color::White);
     text.setScale(sf::Vector2f(1, 1));
-    text.setPosition(sf::Vector2f(x + 7, y+15));
+    text.setPosition(sf::Vector2f(x + 50 - label.size()*10, y + 15));
 }
 
 void Tutorial_Button::draw(sf::RenderWindow& window) {

@@ -73,6 +73,7 @@ public:
     LoadPopup *load_popup;
     TutorialWindow *tutorial_window;
     Tutorial_Button *tutorial_button;
+    Tutorial_Button* m_menu_button;
 
 
     bool isNewFrame = true;
